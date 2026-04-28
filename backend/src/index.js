@@ -2,6 +2,8 @@ import express from 'express'
 import cors from 'cors'
 import jobsRouter from './routes/jobs.routes.js'
 import analysisRouter from './routes/analysis.routes.js'
+import scoringRouter from './routes/scoring.routes.js'
+import prepRouter from './routes/prep.routes.js'
 
 const app = express()
 
@@ -13,7 +15,8 @@ app.use(express.urlencoded({ extended: true }))
 // ── Routes ────────────────────────────────────────────────────────
 app.use('/api/jobs', jobsRouter)
 app.use('/api/jobs/:id', analysisRouter)
-// app.use('/api/messages', messagesRouter)   ← Phase 5
+app.use('/api/jobs/:id', scoringRouter)
+app.use('/api/jobs/:id', prepRouter)
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }))
 

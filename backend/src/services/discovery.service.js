@@ -16,10 +16,13 @@ export async function fetchUrlContent(url) {
     })
     const $ = cheerio.load(data)
     
-    // Remove script and style elements
-    $('script, style, nav, footer, header').remove()
+    // Remove noise elements
+    $('script, style, nav, footer, header, aside, .related-jobs, .footer-links').remove()
     
-    return $('body').text().replace(/\s+/g, ' ').trim()
+    // Focus on likely content areas if they exist, otherwise use body
+    const content = $('.job-description, .description, main, #main, body').text()
+    
+    return content.replace(/\s+/g, ' ').trim()
   } catch (err) {
     throw new Error(`Failed to fetch URL: ${err.message}`)
   }
@@ -32,15 +35,21 @@ export async function fetchUrlContent(url) {
  */
 export async function extractJobInfo(text) {
   const prompt = `
-    Extract the following job information from the text below:
-    - title
-    - company
-    - description (the full job description, cleaned up)
+    Extract high-quality job information from the raw web content provided below.
+    
+    Return a JSON object with:
+    1. "title": The formal job title.
+    2. "company": The company name.
+    3. "description": A clean, well-formatted markdown job description. 
+       - Remove any cookie banners, login prompts, or navigation text.
+       - Focus strictly on the Role, Requirements, and Benefits.
 
-    Text:
-    ${text.slice(0, 5000)}
+    Content:
+    ---
+    ${text.slice(0, 8000)}
+    ---
 
-    Respond in JSON format:
+    JSON Output:
     {
       "title": "...",
       "company": "...",

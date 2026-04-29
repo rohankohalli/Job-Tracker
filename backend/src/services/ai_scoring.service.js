@@ -1,19 +1,31 @@
 import { generateJSON } from './llm.service.js'
 
-const SCORING_PROMPT = (analysis, resumeText, score, missingSkills) => `
-You are an expert technical recruiter analyzing a resume against a job description.
-The resume has received a deterministic keyword-match score of ${score}/100.
-The following skills were deemed missing by simple keyword matching: ${missingSkills.join(', ')}.
+const SCORING_PROMPT = (analysis, resumeText) => `
+You are an expert technical recruiter and ATS (Applicant Tracking System) optimizer.
+Your goal is to provide a realistic, professional score and analysis of a candidate's resume against a job description.
 
-Provide a brief, human-in-the-loop explanation of this match.
+Analyze the resume contextually. Don't just look for keywords; look for evidence of competence, seniority, and experience.
 
 Return a JSON object exactly matching this schema:
 {
-  "summary": "A 2-3 sentence overview of why the candidate is or isn't a fit.",
+  "total_score": 0-100,
+  "breakdown": {
+    "skill_match": 0-40,
+    "experience_fit": 0-30,
+    "role_relevance": 0-20,
+    "overall_quality": 0-10
+  },
+  "summary": "Professional overview (2-3 sentences).",
   "strengths": ["string"],
   "gaps": ["string"],
-  "recommendation": "string (e.g. 'Strong match, proceed to apply', 'Needs tailoring', etc.)"
+  "recommendation": "Specific actionable advice."
 }
+
+Scoring Rubric:
+- Skill Match (40 pts): Technical stack alignment and depth.
+- Experience Fit (30 pts): Seniority, years of experience, and progression.
+- Role Relevance (20 pts): Industry alignment, title similarity, and responsibility overlap.
+- Overall Quality (10 pts): Clarity, impact-driven bullet points, and lack of filler.
 
 Job Analysis Context:
 ${JSON.stringify(analysis, null, 2)}
@@ -25,8 +37,8 @@ ${resumeText}
 `
 
 /**
- * Generate an AI explanation for a resume score.
+ * Generate a realistic AI scoring and explanation for a resume.
  */
-export async function generateExplanation(analysis, resumeText, score, missingSkills) {
-  return await generateJSON(SCORING_PROMPT(analysis, resumeText, score, missingSkills))
+export async function generateExplanation(analysis, resumeText) {
+  return await generateJSON(SCORING_PROMPT(analysis, resumeText))
 }

@@ -12,3 +12,6 @@ export const getResumeScore = (id) =>
       if (err.message.includes('No resume found')) return null
       throw err
     })
+
+export const rescoreJob = (id) =>
+  fetchApi(`/jobs/${id}/rescore`, { method: 'POST' })

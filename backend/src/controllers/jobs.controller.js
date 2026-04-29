@@ -52,6 +52,16 @@ export async function updateStatus(req, res, next) {
   }
 }
 
+export async function updateJob(req, res, next) {
+  try {
+    const job = await jobsService.updateJob(Number(req.params.id), req.body)
+    if (!job) return res.status(404).json({ error: 'Job not found' })
+    res.json(job)
+  } catch (err) {
+    next(err)
+  }
+}
+
 export async function deleteJob(req, res, next) {
   try {
     const deleted = await jobsService.deleteJob(Number(req.params.id))

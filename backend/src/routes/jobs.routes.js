@@ -7,6 +7,7 @@ const router = Router()
 router.get('/',        jobsController.listJobs)    // GET  /api/jobs
 router.get('/:id',     jobsController.getJob)      // GET  /api/jobs/:id
 router.post('/',       jobsController.createJob)   // POST /api/jobs
+router.put('/:id',      jobsController.updateJob)    // PUT  /api/jobs/:id
 router.patch('/:id/status', jobsController.updateStatus)  // PATCH /api/jobs/:id/status
 router.delete('/:id',  jobsController.deleteJob)   // DELETE /api/jobs/:id
 

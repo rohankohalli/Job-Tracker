@@ -68,10 +68,23 @@ export async function getPrepMaterials(jobId) {
   const [rows] = await pool.query('SELECT * FROM prep_materials WHERE job_id = ?', [jobId])
   if (!rows[0]) return null
   
+  const row = rows[0]
+  
+  const safeParse = (val) => {
+    if (typeof val === 'string') {
+      try {
+        return JSON.parse(val)
+      } catch {
+        return null
+      }
+    }
+    return val ?? null
+  }
+
   return {
-    ...rows[0],
-    interview_prep: rows[0].interview_prep ? JSON.parse(rows[0].interview_prep) : null,
-    resume_tailor: rows[0].resume_tailor ? JSON.parse(rows[0].resume_tailor) : null
+    ...row,
+    interview_prep: safeParse(row.interview_prep),
+    resume_tailor: safeParse(row.resume_tailor)
   }
 }
 
@@ -83,9 +96,10 @@ async function getContext(jobId) {
   if (!analysis) throw new Error('Job description must be analyzed first.')
   if (!resume) throw new Error('Resume must be scored first to identify gaps.')
 
-  // Re-run simple diff to get missing skills
+  // Identify gaps using the analysis breakdown
+  // We'll use the missing keywords as a proxy for gaps
   const resumeText = resume.content.toLowerCase()
-  const missingSkills = [...analysis.required_skills, ...analysis.nice_to_have].filter(
+  const missingSkills = [...(analysis.required_skills || []), ...(analysis.nice_to_have || [])].filter(
     skill => !resumeText.includes(skill.toLowerCase())
   )
 

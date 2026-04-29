@@ -26,3 +26,15 @@ export async function getResume(req, res, next) {
     next(err)
   }
 }
+
+export async function rescore(req, res, next) {
+  try {
+    const result = await scoringService.rescoreJob(Number(req.params.id))
+    res.json(result)
+  } catch (err) {
+    if (err.status === 429) {
+      return res.status(429).json({ error: err.message })
+    }
+    next(err)
+  }
+}

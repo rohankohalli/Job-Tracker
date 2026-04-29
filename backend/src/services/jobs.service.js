@@ -55,6 +55,35 @@ export async function updateJobStatus(id, status) {
 }
 
 /**
+ * Update general job details.
+ * @param {number} id 
+ * @param {{ title?: string, company?: string, url?: string, description?: string }} data 
+ */
+export async function updateJob(id, data) {
+  const { title, company, url, description } = data
+  
+  // Build dynamic update query
+  const updates = []
+  const params = []
+  
+  if (title !== undefined) { updates.push('title = ?'); params.push(title) }
+  if (company !== undefined) { updates.push('company = ?'); params.push(company) }
+  if (url !== undefined) { updates.push('url = ?'); params.push(url) }
+  if (description !== undefined) { updates.push('description = ?'); params.push(description) }
+  
+  if (updates.length === 0) return getJobById(id)
+  
+  params.push(id)
+  const [result] = await pool.query(
+    `UPDATE jobs SET ${updates.join(', ')} WHERE id = ?`,
+    params
+  )
+  
+  if (result.affectedRows === 0) return null
+  return getJobById(id)
+}
+
+/**
  * Delete a job by id. Returns true if deleted, false if not found.
  * @param {number} id
  */

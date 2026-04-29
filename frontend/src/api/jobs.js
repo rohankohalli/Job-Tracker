@@ -9,6 +9,9 @@ export const getJobById = (id) =>
 export const createJob = (data) => 
   fetchApi('/jobs', { method: 'POST', body: JSON.stringify(data) })
 
+export const updateJob = (id, data) =>
+  fetchApi(`/jobs/${id}`, { method: 'PUT', body: JSON.stringify(data) })
+
 export const updateJobStatus = (id, status) => 
   fetchApi(`/jobs/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) })
 

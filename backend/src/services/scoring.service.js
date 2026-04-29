@@ -3,47 +3,7 @@ import * as analysisService from './analysis.service.js'
 import * as aiScoringService from './ai_scoring.service.js'
 
 /**
- * Deterministic scoring based on keyword overlap.
- * @param {string[]} requiredSkills
- * @param {string[]} niceToHave
- * @param {string} resumeText
- * @returns {object} { score, matched, missing }
- */
-function calculateDeterministicScore(requiredSkills, niceToHave, resumeText) {
-  const text = resumeText.toLowerCase()
-  
-  const checkSkills = (skills) => {
-    const matched = []
-    const missing = []
-    for (const skill of skills) {
-      if (text.includes(skill.toLowerCase())) {
-        matched.push(skill)
-      } else {
-        missing.push(skill)
-      }
-    }
-    return { matched, missing }
-  }
-
-  const reqCheck = checkSkills(requiredSkills)
-  const niceCheck = checkSkills(niceToHave)
-
-  // Weight: Required skills are 80% of the score, Nice-to-have are 20%
-  // Mix of 1 & 2: If no skills are identified in JD, score is 0 (don't reward empty analysis)
-  const reqWeight = requiredSkills.length > 0 ? (reqCheck.matched.length / requiredSkills.length) * 80 : 0
-  const niceWeight = niceToHave.length > 0 ? (niceCheck.matched.length / niceToHave.length) * 20 : 0
-
-  const score = Math.round(reqWeight + niceWeight)
-
-  return {
-    score,
-    matched: [...reqCheck.matched, ...niceCheck.matched],
-    missing: [...reqCheck.missing, ...niceCheck.missing]
-  }
-}
-
-/**
- * Score a resume against a job description, combining deterministic and AI logic.
+ * Score a resume against a job description using a realistic AI-driven model.
  * Saves the result to the resumes table.
  * @param {number} jobId
  * @param {string} resumeText
@@ -55,13 +15,10 @@ export async function scoreAndSaveResume(jobId, resumeText) {
     throw new Error('Job description must be analyzed before scoring a resume.')
   }
 
-  // 2. Deterministic Score
-  const detResult = calculateDeterministicScore(analysis.required_skills, analysis.nice_to_have, resumeText)
+  // 2. Realistic AI Scoring & Explanation
+  const aiResult = await aiScoringService.generateExplanation(analysis, resumeText)
 
-  // 3. AI Explanation
-  const explanation = await aiScoringService.generateExplanation(analysis, resumeText, detResult.score, detResult.missing)
-
-  // 4. Save to DB
+  // 3. Save to DB
   await pool.query(
     `INSERT INTO resumes (job_id, content, score, explanation)
      VALUES (?, ?, ?, ?)
@@ -69,7 +26,7 @@ export async function scoreAndSaveResume(jobId, resumeText) {
       content = VALUES(content),
       score = VALUES(score),
       explanation = VALUES(explanation)`,
-    [jobId, resumeText, detResult.score, JSON.stringify(explanation)]
+    [jobId, resumeText, aiResult.total_score, JSON.stringify(aiResult)]
   )
 
   return getResumeByJobId(jobId)
@@ -88,4 +45,30 @@ export async function getResumeByJobId(jobId) {
     ...row,
     explanation: JSON.parse(row.explanation || '{}')
   }
+}
+
+/**
+ * Re-calculate the score for a job if cooldown has passed.
+ * @param {number} jobId 
+ */
+export async function rescoreJob(jobId) {
+  const resume = await getResumeByJobId(jobId)
+  if (!resume) {
+    throw new Error('No resume found to rescore.')
+  }
+
+  // Cooldown: 1 minute (60,000 ms)
+  const COOLDOWN_MS = 60 * 1000
+  const lastScored = new Date(resume.updated_at).getTime()
+  const now = Date.now()
+  const diff = now - lastScored
+
+  if (diff < COOLDOWN_MS) {
+    const remaining = Math.ceil((COOLDOWN_MS - diff) / 1000)
+    const err = new Error(`Cooldown active. Please wait ${remaining}s before rescoring.`)
+    err.status = 429
+    throw err
+  }
+
+  return await scoreAndSaveResume(jobId, resume.content)
 }

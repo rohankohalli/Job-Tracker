@@ -23,3 +23,10 @@ export const captureUrl = (url) =>
 
 export const parseJD = (description) =>
   fetchApi('/jobs/parse', { method: 'POST', body: JSON.stringify({ description }) })
+
+export const searchJobs = (query, location = '', page = 1) => {
+  let url = `/search?page=${page}`
+  if (query) url += `&q=${encodeURIComponent(query)}`
+  if (location) url += `&location=${encodeURIComponent(location)}`
+  return fetchApi(url)
+}

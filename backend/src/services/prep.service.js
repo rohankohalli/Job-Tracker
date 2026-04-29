@@ -4,20 +4,25 @@ import * as analysisService from './analysis.service.js'
 import * as scoringService from './scoring.service.js'
 
 const INTERVIEW_PREP_PROMPT = (analysis, resume, missingSkills) => `
-You are an experienced hiring manager at a top-tier company. Your tone is supportive, coaching, and deeply humanized—like a mentor helping a junior.
+You are an experienced hiring manager. Your tone is supportive, coaching, and professional.
 You are preparing a candidate for an interview for the role described below.
-Based on the gaps in their resume (${missingSkills.length > 0 ? missingSkills.join(', ') : 'minor gaps'}), predict the top 3 hardest behavioral questions they will be asked.
 
-For each question, provide a STAR (Situation, Task, Action, Result) method coaching tip on how they should answer to pivot the gap into a strength.
+Based on the Job Description and the Candidate's Resume, predict the top 5 MOST PROBABLE questions they will be asked. 
+These should include a mix of:
+1. Technical questions about their core stack.
+2. Behavioral questions regarding their past projects.
+3. Questions addressing the gaps in their resume (${missingSkills.length > 0 ? missingSkills.join(', ') : 'minor gaps'}).
+
+For each question, provide a STAR (Situation, Task, Action, Result) method coaching tip on how they should answer.
 
 Return ONLY a JSON object matching this schema:
 {
   "opening_advice": "A short, encouraging note from you as the hiring manager.",
   "questions": [
     {
-      "question": "The behavioral question",
-      "why_they_will_ask_it": "Briefly explain why this is a concern based on the resume gap",
-      "star_coaching": "How to structure the answer using STAR, focusing on pivoting the weakness"
+      "question": "The interview question",
+      "likely_reason": "Briefly explain why this is a likely question for this specific JD/Resume combination",
+      "star_coaching": "How to structure the answer using STAR"
     }
   ]
 }
@@ -96,8 +101,6 @@ async function getContext(jobId) {
   if (!analysis) throw new Error('Job description must be analyzed first.')
   if (!resume) throw new Error('Resume must be scored first to identify gaps.')
 
-  // Identify gaps using the analysis breakdown
-  // We'll use the missing keywords as a proxy for gaps
   const resumeText = resume.content.toLowerCase()
   const missingSkills = [...(analysis.required_skills || []), ...(analysis.nice_to_have || [])].filter(
     skill => !resumeText.includes(skill.toLowerCase())

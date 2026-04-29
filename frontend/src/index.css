@@ -3,10 +3,8 @@
 @theme {
   --color-primary: #3b82f6; /* blue-500 */
   --color-primary-dark: #2563eb; /* blue-600 */
-  
   --color-bg-dark: #0f172a; /* slate-900 */
   --color-panel-dark: #1e293b; /* slate-800 */
-  
   --font-sans: 'Inter', system-ui, sans-serif;
 }
 

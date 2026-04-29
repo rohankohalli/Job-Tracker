@@ -2,9 +2,9 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
 
-// Shared model instance — reused across all service calls
+// Using 'gemini-flash-latest' as identified by your API key list
 const model = genAI.getGenerativeModel({
-  model: 'gemini-1.5-flash',
+  model: 'gemini-flash-latest', 
   generationConfig: {
     responseMimeType: 'application/json', // force structured JSON output
   },
@@ -17,11 +17,12 @@ const model = genAI.getGenerativeModel({
  * @returns {Promise<object>}
  */
 export async function generateJSON(prompt) {
-  const result = await model.generateContent(prompt)
-  const text = result.response.text()
   try {
+    const result = await model.generateContent(prompt)
+    const text = result.response.text()
     return JSON.parse(text)
-  } catch {
-    throw new Error(`LLM returned non-JSON response: ${text.slice(0, 200)}`)
+  } catch (err) {
+    console.error(`LLM Error [${model.model}]:`, err.message)
+    throw err
   }
 }

@@ -29,8 +29,9 @@ function calculateDeterministicScore(requiredSkills, niceToHave, resumeText) {
   const niceCheck = checkSkills(niceToHave)
 
   // Weight: Required skills are 80% of the score, Nice-to-have are 20%
-  const reqWeight = requiredSkills.length > 0 ? (reqCheck.matched.length / requiredSkills.length) * 80 : 80
-  const niceWeight = niceToHave.length > 0 ? (niceCheck.matched.length / niceToHave.length) * 20 : 20
+  // Mix of 1 & 2: If no skills are identified in JD, score is 0 (don't reward empty analysis)
+  const reqWeight = requiredSkills.length > 0 ? (reqCheck.matched.length / requiredSkills.length) * 80 : 0
+  const niceWeight = niceToHave.length > 0 ? (niceCheck.matched.length / niceToHave.length) * 20 : 0
 
   const score = Math.round(reqWeight + niceWeight)
 

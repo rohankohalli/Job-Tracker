@@ -35,7 +35,7 @@ ${jd}
 export async function analyzeAndSave(jobId, description) {
   const structured = await generateJSON(ANALYSIS_PROMPT(description))
 
-  const [result] = await pool.query(
+  await pool.query(
     `INSERT INTO jd_analyses
       (job_id, required_skills, nice_to_have, experience_years, role_type, key_responsibilities, red_flags, raw_response)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -74,12 +74,24 @@ export async function getAnalysisByJobId(jobId) {
   if (!rows[0]) return null
 
   const row = rows[0]
-  // Parse JSON columns back to arrays
+
+  // Helper to handle both string and already-parsed object/array
+  const safeParse = (val) => {
+    if (typeof val === 'string') {
+      try {
+        return JSON.parse(val)
+      } catch {
+        return []
+      }
+    }
+    return val ?? []
+  }
+
   return {
     ...row,
-    required_skills: JSON.parse(row.required_skills ?? '[]'),
-    nice_to_have: JSON.parse(row.nice_to_have ?? '[]'),
-    key_responsibilities: JSON.parse(row.key_responsibilities ?? '[]'),
-    red_flags: JSON.parse(row.red_flags ?? '[]'),
+    required_skills: safeParse(row.required_skills),
+    nice_to_have: safeParse(row.nice_to_have),
+    key_responsibilities: safeParse(row.key_responsibilities),
+    red_flags: safeParse(row.red_flags),
   }
 }

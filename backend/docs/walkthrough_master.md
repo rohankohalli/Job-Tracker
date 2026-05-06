@@ -1,4 +1,4 @@
-# Mastering CareerLens: AI Job Assistant
+# Mastering Career Catalyst: AI Job Assistant
 
 Welcome to your AI-powered job application command center. This document explains "every aspect" of the system, from how we fetch data to how the AI coaches you for success.
 

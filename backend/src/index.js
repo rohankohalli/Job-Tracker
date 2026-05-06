@@ -4,6 +4,7 @@ import jobsRouter from './routes/jobs.routes.js'
 import analysisRouter from './routes/analysis.routes.js'
 import scoringRouter from './routes/scoring.routes.js'
 import prepRouter from './routes/prep.routes.js'
+import searchRouter from './routes/search.routes.js'
 
 const app = express()
 
@@ -17,6 +18,7 @@ app.use('/api/jobs', jobsRouter)
 app.use('/api/jobs/:id', analysisRouter)
 app.use('/api/jobs/:id', scoringRouter)
 app.use('/api/jobs/:id', prepRouter)
+app.use('/api/search', searchRouter)
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }))
 

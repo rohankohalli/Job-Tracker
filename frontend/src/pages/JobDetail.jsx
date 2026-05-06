@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
-import { getJobById, updateJobStatus, updateJob } from '../api/jobs'
+import { useParams, Link, useNavigate } from 'react-router-dom'
+import { getJobById, updateJobStatus, updateJob, deleteJob } from '../api/jobs'
 import StatusBadge from '../components/StatusBadge'
 import AnalysisPanel from '../components/AnalysisPanel'
 import ScoreCard from '../components/ScoreCard'
 import PrepDashboard from '../components/PrepDashboard'
-import { Building2, Link as LinkIcon, ArrowLeft, Pencil, Save, X, ExternalLink } from 'lucide-react'
+import { Building2, Link as LinkIcon, ArrowLeft, Pencil, Save, X, ExternalLink, Trash2 } from 'lucide-react'
 
 export default function JobDetail() {
   const { id } = useParams()
+  const navigate = useNavigate()
   const [job, setJob] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -47,6 +48,17 @@ export default function JobDetail() {
       setJob(updated)
     } catch (err) {
       alert('Failed to update status: ' + err.message)
+    }
+  }
+
+  const handleDelete = async () => {
+    const confirm = window.confirm('Are you sure you want to delete this job? This action cannot be undone.')
+    if (!confirm) return
+    try {
+      await deleteJob(id)
+      navigate('/')
+    } catch (err) {
+      alert('Failed to delete job: ' + err.message)
     }
   }
 
@@ -155,6 +167,16 @@ export default function JobDetail() {
             <option value="rejected">Rejected</option>
           </select>
           <StatusBadge status={job.status} />
+          
+          <div className="w-px h-6 bg-slate-300 mx-2"></div>
+          
+          <button
+            onClick={handleDelete}
+            title="Delete Job"
+            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
         </div>
       </div>
 

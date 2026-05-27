@@ -183,7 +183,7 @@ export async function searchJobs(query, location, page = 1) {
       const result = await searchAdzuna(query, location, page)
       if (result.results.length > 0) return result
     } catch (err) {
-      console.error('Adzuna failed:', err.message)
+      console.error('Adzuna failed:', err)
     }
   }
 

@@ -1,4 +1,4 @@
-import pool from '../db/connection.js'
+import db from '../models/index.js'
 import { generateJSON } from './llm.service.js'
 
 const ANALYSIS_PROMPT = (jd) => `
@@ -35,29 +35,16 @@ ${jd}
 export async function analyzeAndSave(jobId, description) {
   const structured = await generateJSON(ANALYSIS_PROMPT(description))
 
-  await pool.query(
-    `INSERT INTO jd_analyses
-      (job_id, required_skills, nice_to_have, experience_years, role_type, key_responsibilities, red_flags, raw_response)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-     ON DUPLICATE KEY UPDATE
-      required_skills = VALUES(required_skills),
-      nice_to_have = VALUES(nice_to_have),
-      experience_years = VALUES(experience_years),
-      role_type = VALUES(role_type),
-      key_responsibilities = VALUES(key_responsibilities),
-      red_flags = VALUES(red_flags),
-      raw_response = VALUES(raw_response)`,
-    [
-      jobId,
-      JSON.stringify(structured.required_skills ?? []),
-      JSON.stringify(structured.nice_to_have ?? []),
-      structured.experience_years ?? 'not specified',
-      structured.role_type ?? 'not specified',
-      JSON.stringify(structured.key_responsibilities ?? []),
-      JSON.stringify(structured.red_flags ?? []),
-      JSON.stringify(structured),
-    ]
-  )
+  await db.JdAnalysis.upsert({
+    jobId,
+    requiredSkills: structured.required_skills ?? [],
+    niceToHave: structured.nice_to_have ?? [],
+    experienceYears: structured.experience_years ?? 'not specified',
+    roleType: structured.role_type ?? 'not specified',
+    keyResponsibilities: structured.key_responsibilities ?? [],
+    redFlags: structured.red_flags ?? [],
+    rawResponse: JSON.stringify(structured),
+  })
 
   return getAnalysisByJobId(jobId)
 }
@@ -67,31 +54,26 @@ export async function analyzeAndSave(jobId, description) {
  * @param {number} jobId
  */
 export async function getAnalysisByJobId(jobId) {
-  const [rows] = await pool.query(
-    'SELECT * FROM jd_analyses WHERE job_id = ? ORDER BY created_at DESC LIMIT 1',
-    [jobId]
-  )
-  if (!rows[0]) return null
+  const analysis = await db.JdAnalysis.findOne({
+    where: { jobId },
+    order: [['created_at', 'DESC']]
+  })
+  if (!analysis) return null
 
-  const row = rows[0]
+  const row = analysis.get({ plain: true })
 
-  // Helper to handle both string and already-parsed object/array
-  const safeParse = (val) => {
-    if (typeof val === 'string') {
-      try {
-        return JSON.parse(val)
-      } catch {
-        return []
-      }
-    }
-    return val ?? []
-  }
+  const safeArray = (val) => Array.isArray(val) ? val : []
 
   return {
-    ...row,
-    required_skills: safeParse(row.required_skills),
-    nice_to_have: safeParse(row.nice_to_have),
-    key_responsibilities: safeParse(row.key_responsibilities),
-    red_flags: safeParse(row.red_flags),
+    id: row.id,
+    job_id: row.jobId,
+    required_skills: safeArray(row.requiredSkills),
+    nice_to_have: safeArray(row.niceToHave),
+    experience_years: row.experienceYears,
+    role_type: row.roleType,
+    key_responsibilities: safeArray(row.keyResponsibilities),
+    red_flags: safeArray(row.redFlags),
+    raw_response: row.rawResponse,
+    created_at: row.createdAt,
   }
 }

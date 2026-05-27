@@ -1,4 +1,4 @@
-import pool from '../db/connection.js'
+import db from '../models/index.js'
 import { generateJSON } from './llm.service.js'
 import * as analysisService from './analysis.service.js'
 import * as scoringService from './scoring.service.js'
@@ -70,10 +70,10 @@ export async function generateResumeTailor(jobId) {
 }
 
 export async function getPrepMaterials(jobId) {
-  const [rows] = await pool.query('SELECT * FROM prep_materials WHERE job_id = ?', [jobId])
-  if (!rows[0]) return null
+  const prep = await db.PrepMaterial.findOne({ where: { jobId } })
+  if (!prep) return null
   
-  const row = rows[0]
+  const row = prep.get({ plain: true })
   
   const safeParse = (val) => {
     if (typeof val === 'string') {
@@ -87,9 +87,12 @@ export async function getPrepMaterials(jobId) {
   }
 
   return {
-    ...row,
-    interview_prep: safeParse(row.interview_prep),
-    resume_tailor: safeParse(row.resume_tailor)
+    id: row.id,
+    job_id: row.jobId,
+    interview_prep: safeParse(row.interviewPrep),
+    resume_tailor: safeParse(row.resumeTailor),
+    created_at: row.createdAt,
+    updated_at: row.updatedAt,
   }
 }
 
@@ -111,14 +114,12 @@ async function getContext(jobId) {
 
 // Internal Helper
 async function savePrepMaterial(jobId, column, data) {
-  const jsonStr = JSON.stringify(data)
+  const modelField = column === 'interview_prep' ? 'interviewPrep' : 'resumeTailor'
   
-  await pool.query(
-    `INSERT INTO prep_materials (job_id, ${column})
-     VALUES (?, ?)
-     ON DUPLICATE KEY UPDATE
-      ${column} = VALUES(${column})`,
-    [jobId, jsonStr]
-  )
+  await db.PrepMaterial.upsert({
+    jobId,
+    [modelField]: data,
+  })
+  
   return getPrepMaterials(jobId)
 }

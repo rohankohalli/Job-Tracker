@@ -1,4 +1,4 @@
-import pool from '../db/connection.js'
+import db from '../models/index.js'
 import * as analysisService from './analysis.service.js'
 import * as aiScoringService from './ai_scoring.service.js'
 
@@ -19,15 +19,12 @@ export async function scoreAndSaveResume(jobId, resumeText) {
   const aiResult = await aiScoringService.generateExplanation(analysis, resumeText)
 
   // 3. Save to DB
-  await pool.query(
-    `INSERT INTO resumes (job_id, content, score, explanation)
-     VALUES (?, ?, ?, ?)
-     ON DUPLICATE KEY UPDATE
-      content = VALUES(content),
-      score = VALUES(score),
-      explanation = VALUES(explanation)`,
-    [jobId, resumeText, aiResult.total_score, JSON.stringify(aiResult)]
-  )
+  await db.Resume.upsert({
+    jobId,
+    content: resumeText,
+    score: aiResult.total_score,
+    explanation: JSON.stringify(aiResult),
+  })
 
   return getResumeByJobId(jobId)
 }
@@ -37,13 +34,27 @@ export async function scoreAndSaveResume(jobId, resumeText) {
  * @param {number} jobId
  */
 export async function getResumeByJobId(jobId) {
-  const [rows] = await pool.query('SELECT * FROM resumes WHERE job_id = ?', [jobId])
-  if (!rows[0]) return null
+  const resume = await db.Resume.findOne({ where: { jobId } })
+  if (!resume) return null
   
-  const row = rows[0]
+  const row = resume.get({ plain: true })
+  let parsedExplanation = {}
+  if (row.explanation) {
+    try {
+      parsedExplanation = typeof row.explanation === 'string' ? JSON.parse(row.explanation) : row.explanation
+    } catch {
+      parsedExplanation = {}
+    }
+  }
+
   return {
-    ...row,
-    explanation: JSON.parse(row.explanation || '{}')
+    id: row.id,
+    job_id: row.jobId,
+    content: row.content,
+    score: row.score,
+    explanation: parsedExplanation,
+    created_at: row.createdAt,
+    updated_at: row.updatedAt,
   }
 }
 

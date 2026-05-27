@@ -1,21 +1,16 @@
-import pool from '../db/connection.js'
+import db from '../models/index.js'
 
 /**
  * Return all jobs, optionally filtered by status.
  * @param {string|undefined} status
  */
 export async function getAllJobs(status) {
-  if (status) {
-    const [rows] = await pool.query(
-      'SELECT * FROM jobs WHERE status = ? ORDER BY created_at DESC',
-      [status]
-    )
-    return rows
-  }
-  const [rows] = await pool.query(
-    'SELECT * FROM jobs ORDER BY created_at DESC'
-  )
-  return rows
+  const where = status ? { status } : {}
+  const jobs = await db.Job.findAll({
+    where,
+    order: [['created_at', 'DESC']]
+  })
+  return jobs.map(job => job.get({ plain: true }))
 }
 
 /**
@@ -23,8 +18,8 @@ export async function getAllJobs(status) {
  * @param {number} id
  */
 export async function getJobById(id) {
-  const [rows] = await pool.query('SELECT * FROM jobs WHERE id = ?', [id])
-  return rows[0] ?? null
+  const job = await db.Job.findByPk(id)
+  return job ? job.get({ plain: true }) : null
 }
 
 /**
@@ -33,11 +28,8 @@ export async function getJobById(id) {
  */
 export async function createJob(data) {
   const { title, company, url = null, description = null } = data
-  const [result] = await pool.query(
-    'INSERT INTO jobs (title, company, url, description) VALUES (?, ?, ?, ?)',
-    [title, company, url, description]
-  )
-  return getJobById(result.insertId)
+  const job = await db.Job.create({ title, company, url, description })
+  return job.get({ plain: true })
 }
 
 /**
@@ -46,11 +38,11 @@ export async function createJob(data) {
  * @param {'saved'|'applied'|'rejected'} status
  */
 export async function updateJobStatus(id, status) {
-  const [result] = await pool.query(
-    'UPDATE jobs SET status = ? WHERE id = ?',
-    [status, id]
+  const [affectedRows] = await db.Job.update(
+    { status },
+    { where: { id } }
   )
-  if (result.affectedRows === 0) return null
+  if (affectedRows === 0) return null
   return getJobById(id)
 }
 
@@ -62,24 +54,16 @@ export async function updateJobStatus(id, status) {
 export async function updateJob(id, data) {
   const { title, company, url, description } = data
   
-  // Build dynamic update query
-  const updates = []
-  const params = []
+  const updateData = {}
+  if (title !== undefined) updateData.title = title
+  if (company !== undefined) updateData.company = company
+  if (url !== undefined) updateData.url = url
+  if (description !== undefined) updateData.description = description
   
-  if (title !== undefined) { updates.push('title = ?'); params.push(title) }
-  if (company !== undefined) { updates.push('company = ?'); params.push(company) }
-  if (url !== undefined) { updates.push('url = ?'); params.push(url) }
-  if (description !== undefined) { updates.push('description = ?'); params.push(description) }
+  if (Object.keys(updateData).length === 0) return getJobById(id)
   
-  if (updates.length === 0) return getJobById(id)
-  
-  params.push(id)
-  const [result] = await pool.query(
-    `UPDATE jobs SET ${updates.join(', ')} WHERE id = ?`,
-    params
-  )
-  
-  if (result.affectedRows === 0) return null
+  const [affectedRows] = await db.Job.update(updateData, { where: { id } })
+  if (affectedRows === 0) return null
   return getJobById(id)
 }
 
@@ -88,6 +72,6 @@ export async function updateJob(id, data) {
  * @param {number} id
  */
 export async function deleteJob(id) {
-  const [result] = await pool.query('DELETE FROM jobs WHERE id = ?', [id])
-  return result.affectedRows > 0
+  const affectedRows = await db.Job.destroy({ where: { id } })
+  return affectedRows > 0
 }

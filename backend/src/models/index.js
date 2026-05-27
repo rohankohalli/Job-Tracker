@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize'
-import sequelize from '../config/db.config.js'
+import sequelize from '../config/dbconfig.js'
 import JobModel from './Job.model.js'
 import JdAnalysisModel from './JdAnalysis.model.js'
 import ResumeModel from './Resume.model.js'

@@ -92,7 +92,7 @@ export default function JobSearch() {
               className="block w-full pl-14 pr-4 py-4 text-base border-2 border-slate-200 rounded-2xl bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all shadow-sm font-medium"
             />
           </div>
-          
+
           <div className="relative flex-1 group">
             <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
               <MapPin className="h-5 w-5 text-emerald-400 group-focus-within:text-emerald-600 transition-colors" />
@@ -101,7 +101,7 @@ export default function JobSearch() {
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              placeholder="Location (e.g. New York, NY)"
+              placeholder="Location (e.g. Bangalore, Pune)"
               className="block w-full pl-14 pr-4 py-4 text-base border-2 border-slate-200 rounded-2xl bg-white focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all shadow-sm font-medium"
             />
           </div>
@@ -141,10 +141,10 @@ export default function JobSearch() {
           <div className="grid gap-4">
             {results.map((job) => (
               <div key={job.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-indigo-300 transition-all group flex flex-col md:flex-row gap-6 md:items-center">
-                
+
                 <div className="flex-1 space-y-3">
                   <h4 className="text-xl font-bold text-slate-900 leading-tight">{job.title}</h4>
-                  
+
                   <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-500">
                     <span className="flex items-center gap-1.5 text-slate-700">
                       <Building2 className="w-4 h-4 text-indigo-400" /> {job.company}
@@ -175,9 +175,9 @@ export default function JobSearch() {
                     )}
                   </button>
                   {job.url && (
-                    <a 
-                      href={job.url} 
-                      target="_blank" 
+                    <a
+                      href={job.url}
+                      target="_blank"
                       rel="noreferrer"
                       className="text-center text-xs font-bold text-indigo-600 hover:text-indigo-800 py-2 uppercase tracking-widest"
                     >
@@ -207,11 +207,10 @@ export default function JobSearch() {
                     key={p}
                     onClick={() => handlePageChange(p)}
                     disabled={searching}
-                    className={`w-9 h-9 rounded-lg font-bold text-sm transition-all disabled:cursor-not-allowed ${
-                      p === page
+                    className={`w-9 h-9 rounded-lg font-bold text-sm transition-all disabled:cursor-not-allowed ${p === page
                         ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200'
                         : 'border border-slate-200 text-slate-500 hover:border-indigo-300 hover:text-indigo-600'
-                    }`}
+                      }`}
                   >
                     {p}
                   </button>

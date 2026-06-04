@@ -14,7 +14,11 @@ export default function AnalysisPanel({ jobId, hasDescription }) {
         const data = await getAnalysis(jobId)
         setAnalysis(data)
       } catch (err) {
-        setError(err.message)
+        if (err.message.includes('No analysis found')) {
+          setAnalysis(null)
+        } else {
+          setError(err.message)
+        }
       } finally {
         setLoading(false)
       }
@@ -43,12 +47,12 @@ export default function AnalysisPanel({ jobId, hasDescription }) {
         <Sparkles className="w-8 h-8 text-primary mx-auto mb-3" />
         <h3 className="text-lg font-medium text-slate-800 mb-2">AI Job Description Analysis</h3>
         <p className="text-slate-500 mb-4 text-sm max-w-md mx-auto">
-          {hasDescription 
+          {hasDescription
             ? "Extract key requirements, nice-to-haves, and potential red flags automatically using Gemini."
             : "You need to add a job description to analyze it."}
         </p>
-        <button 
-          onClick={handleAnalyze} 
+        <button
+          onClick={handleAnalyze}
           disabled={!hasDescription || analyzing}
           className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition-colors font-medium disabled:opacity-50 flex items-center gap-2 mx-auto"
         >
@@ -70,7 +74,7 @@ export default function AnalysisPanel({ jobId, hasDescription }) {
           {analysis.role_type} • {analysis.experience_years}
         </span>
       </div>
-      
+
       <div className="p-4 grid md:grid-cols-2 gap-6">
         <div>
           <h4 className="text-sm font-medium text-slate-700 mb-3 flex items-center gap-1.5">
@@ -82,7 +86,7 @@ export default function AnalysisPanel({ jobId, hasDescription }) {
             ))}
           </ul>
         </div>
-        
+
         <div className="space-y-6">
           {analysis.nice_to_have?.length > 0 && (
             <div>

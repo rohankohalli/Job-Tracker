@@ -6,14 +6,6 @@ export const triggerAnalysis = async (id) => {
 }
 
 export const getAnalysis = async (id) => {
-  try {
-    const response = await apiClient.get(`/jobs/${id}/analysis`)
-    return response.data
-  } catch (err) {
-    // 404 just means not analyzed yet, return null
-    if (err.message.includes('No analysis found')) {
-      return null
-    }
-    throw err
-  }
+  const response = await apiClient.get(`/jobs/${id}/analysis`)
+  return response.data
 }

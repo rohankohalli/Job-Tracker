@@ -6,15 +6,8 @@ export const scoreResume = async (id, resumeText) => {
 }
 
 export const getResumeScore = async (id) => {
-  try {
-    const response = await apiClient.get(`/jobs/${id}/resume`)
-    return response.data
-  } catch (err) {
-    if (err.message.includes('No resume found')) {
-      return null
-    }
-    throw err
-  }
+  const response = await apiClient.get(`/jobs/${id}/resume`)
+  return response.data
 }
 
 export const rescoreJob = async (id) => {

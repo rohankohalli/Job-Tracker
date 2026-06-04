@@ -11,13 +11,6 @@ export const generateResumeTailor = async (id) => {
 }
 
 export const getPrepMaterials = async (id) => {
-  try {
-    const response = await apiClient.get(`/jobs/${id}/prep`)
-    return response.data
-  } catch (err) {
-    if (err.message.includes('No prep materials found')) {
-      return null
-    }
-    throw err
-  }
+  const response = await apiClient.get(`/jobs/${id}/prep`)
+  return response.data
 }

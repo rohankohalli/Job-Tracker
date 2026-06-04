@@ -16,7 +16,9 @@ export default function PrepDashboard({ jobId, isScored }) {
         const data = await getPrepMaterials(jobId)
         setPrep(data)
       } catch (err) {
-        console.error(err)
+        if (!err.message.includes('No prep materials found')) {
+          console.error(err)
+        }
       } finally {
         setLoading(false)
       }

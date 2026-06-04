@@ -18,7 +18,9 @@ export default function ScoreCard({ jobId, isAnalyzed }) {
       const data = await getResumeScore(jobId)
       setResume(data)
     } catch (err) {
-      console.error(err)
+      if (!err.message.includes('No resume found')) {
+        console.error(err)
+      }
     } finally {
       setLoading(false)
     }

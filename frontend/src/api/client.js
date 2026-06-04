@@ -1,21 +1,20 @@
+import axios from 'axios'
+
 const BASE_URL = 'http://localhost:8000/api'
 
-export async function fetchApi(endpoint, options = {}) {
-  const url = `${BASE_URL}${endpoint}`
-  const headers = {
+const apiClient = axios.create({
+  baseURL: BASE_URL,
+  headers: {
     'Content-Type': 'application/json',
-    ...options.headers,
-  }
+  },
+})
 
-  const response = await fetch(url, { ...options, headers })
-  
-  if (response.status === 204) return null // No content
-
-  const data = await response.json()
-  
-  if (!response.ok) {
-    throw new Error(data.error || 'API Error')
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const errorMsg = error.response?.data?.error || error.message || 'API Error'
+    return Promise.reject(new Error(errorMsg))
   }
-  
-  return data
-}
+)
+
+export default apiClient

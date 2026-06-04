@@ -1,12 +1,19 @@
-import { fetchApi } from './client.js'
+import apiClient from './client.js'
 
-export const triggerAnalysis = (id) => 
-  fetchApi(`/jobs/${id}/analyze`, { method: 'POST' })
+export const triggerAnalysis = async (id) => {
+  const response = await apiClient.post(`/jobs/${id}/analyze`)
+  return response.data
+}
 
-export const getAnalysis = (id) => 
-  fetchApi(`/jobs/${id}/analysis`)
-    .catch((err) => {
-      // 404 just means not analyzed yet, don't throw
-      if (err.message.includes('No analysis found')) return null
-      throw err
-    })
+export const getAnalysis = async (id) => {
+  try {
+    const response = await apiClient.get(`/jobs/${id}/analysis`)
+    return response.data
+  } catch (err) {
+    // 404 just means not analyzed yet, return null
+    if (err.message.includes('No analysis found')) {
+      return null
+    }
+    throw err
+  }
+}

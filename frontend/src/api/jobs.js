@@ -1,32 +1,49 @@
-import { fetchApi } from './client.js'
+import apiClient from './client.js'
 
-export const getJobs = (status) => 
-  fetchApi(`/jobs${status ? `?status=${status}` : ''}`)
+export const getJobs = async (status) => {
+  const response = await apiClient.get('/jobs', { params: status ? { status } : {} })
+  return response.data
+}
 
-export const getJobById = (id) => 
-  fetchApi(`/jobs/${id}`)
+export const getJobById = async (id) => {
+  const response = await apiClient.get(`/jobs/${id}`)
+  return response.data
+}
 
-export const createJob = (data) => 
-  fetchApi('/jobs', { method: 'POST', body: JSON.stringify(data) })
+export const createJob = async (data) => {
+  const response = await apiClient.post('/jobs', data)
+  return response.data
+}
 
-export const updateJob = (id, data) =>
-  fetchApi(`/jobs/${id}`, { method: 'PUT', body: JSON.stringify(data) })
+export const updateJob = async (id, data) => {
+  const response = await apiClient.put(`/jobs/${id}`, data)
+  return response.data
+}
 
-export const updateJobStatus = (id, status) => 
-  fetchApi(`/jobs/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) })
+export const updateJobStatus = async (id, status) => {
+  const response = await apiClient.patch(`/jobs/${id}/status`, { status })
+  return response.data
+}
 
-export const deleteJob = (id) => 
-  fetchApi(`/jobs/${id}`, { method: 'DELETE' })
+export const deleteJob = async (id) => {
+  const response = await apiClient.delete(`/jobs/${id}`)
+  return response.data
+}
 
-export const captureUrl = (url) =>
-  fetchApi('/jobs/capture', { method: 'POST', body: JSON.stringify({ url }) })
+export const captureUrl = async (url) => {
+  const response = await apiClient.post('/jobs/capture', { url })
+  return response.data
+}
 
-export const parseJD = (description) =>
-  fetchApi('/jobs/parse', { method: 'POST', body: JSON.stringify({ description }) })
+export const parseJD = async (description) => {
+  const response = await apiClient.post('/jobs/parse', { description })
+  return response.data
+}
 
-export const searchJobs = (query, location = '', page = 1) => {
-  let url = `/search?page=${page}`
-  if (query) url += `&q=${encodeURIComponent(query)}`
-  if (location) url += `&location=${encodeURIComponent(location)}`
-  return fetchApi(url)
+export const searchJobs = async (query, location = '', page = 1) => {
+  const params = { page }
+  if (query) params.q = query
+  if (location) params.location = location
+  const response = await apiClient.get('/search', { params })
+  return response.data
 }

@@ -1,14 +1,23 @@
-import { fetchApi } from './client.js'
+import apiClient from './client.js'
 
-export const generateInterviewPrep = (id) => 
-  fetchApi(`/jobs/${id}/interview-prep`, { method: 'POST' })
+export const generateInterviewPrep = async (id) => {
+  const response = await apiClient.post(`/jobs/${id}/interview-prep`)
+  return response.data
+}
 
-export const generateResumeTailor = (id) => 
-  fetchApi(`/jobs/${id}/resume-tailor`, { method: 'POST' })
+export const generateResumeTailor = async (id) => {
+  const response = await apiClient.post(`/jobs/${id}/resume-tailor`)
+  return response.data
+}
 
-export const getPrepMaterials = (id) => 
-  fetchApi(`/jobs/${id}/prep`)
-    .catch((err) => {
-      if (err.message.includes('No prep materials found')) return null
-      throw err
-    })
+export const getPrepMaterials = async (id) => {
+  try {
+    const response = await apiClient.get(`/jobs/${id}/prep`)
+    return response.data
+  } catch (err) {
+    if (err.message.includes('No prep materials found')) {
+      return null
+    }
+    throw err
+  }
+}

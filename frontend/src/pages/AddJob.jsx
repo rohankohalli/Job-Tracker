@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createJob, captureUrl, parseJD } from '../api/jobs'
 import { Wand2, Link as LinkIcon, FileText, Sparkles, AlertCircle, ArrowLeft, Send } from 'lucide-react'
@@ -20,6 +20,54 @@ export default function AddJob() {
     url: '',
     description: ''
   })
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const urlParam = params.get('url')
+    const titleParam = params.get('title')
+    const companyParam = params.get('company')
+    const descParam = params.get('description')
+
+    if (urlParam || titleParam || companyParam || descParam) {
+      setFormData({
+        title: titleParam || '',
+        company: companyParam || '',
+        url: urlParam || '',
+        description: descParam || ''
+      })
+
+      // If we ONLY have a URL and no description, execute server-side capture.
+      // If we already have the description extracted by the bookmarklet, we skip server capture.
+      if (urlParam && !descParam) {
+        triggerAutoCapture(urlParam)
+      }
+    }
+  }, [])
+
+  const triggerAutoCapture = async (url) => {
+    setCapturing(true)
+    setError(null)
+    try {
+      const data = await captureUrl(url)
+      setFormData(prev => ({
+        ...prev,
+        title: data.title || prev.title,
+        company: data.company || prev.company,
+        description: data.description || prev.description
+      }))
+
+      const populated = new Set()
+      if (data.title) populated.add('title')
+      if (data.company) populated.add('company')
+      if (data.description) populated.add('description')
+      setAiFields(populated)
+      formRef.current?.scrollIntoView({ behavior: 'smooth' })
+    } catch (err) {
+      setError(`Capture failed: ${err.message}`)
+    } finally {
+      setCapturing(false)
+    }
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -185,10 +233,10 @@ export default function AddJob() {
                   value={formData.title}
                   onChange={handleChange}
                   className={`w-full px-5 py-3.5 border rounded-2xl focus:outline-none focus:ring-4 transition-all font-medium ${aiFields.has('title')
-                      ? 'border-indigo-200 bg-indigo-50/30 focus:ring-indigo-100'
-                      : 'border-slate-200 focus:ring-slate-100'
+                    ? 'border-indigo-200 bg-indigo-50/30 focus:ring-indigo-100'
+                    : 'border-slate-200 focus:ring-slate-100'
                     }`}
-                  placeholder="e.g. Senior Software Engineer"
+                  placeholder="e.g. Software Engineer"
                 />
                 {aiFields.has('title') && (
                   <Sparkles className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400 pointer-events-none" />
@@ -206,10 +254,10 @@ export default function AddJob() {
                   value={formData.company}
                   onChange={handleChange}
                   className={`w-full px-5 py-3.5 border rounded-2xl focus:outline-none focus:ring-4 transition-all font-medium ${aiFields.has('company')
-                      ? 'border-indigo-200 bg-indigo-50/30 focus:ring-indigo-100'
-                      : 'border-slate-200 focus:ring-slate-100'
+                    ? 'border-indigo-200 bg-indigo-50/30 focus:ring-indigo-100'
+                    : 'border-slate-200 focus:ring-slate-100'
                     }`}
-                  placeholder="e.g. Google"
+                  placeholder="e.g. TCS"
                 />
                 {aiFields.has('company') && (
                   <Sparkles className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400 pointer-events-none" />
@@ -228,7 +276,7 @@ export default function AddJob() {
                   disabled={parsing}
                   className="text-[10px] font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-800 disabled:opacity-50 flex items-center gap-1.5 transition-colors"
                 >
-                  <FileText className="w-3.5 h-3.5" />
+                  <FileText className="w-5.5 h-5.5 cursor-pointer" />
                   {parsing ? 'Analyzing...' : 'Auto-Extract from JD'}
                 </button>
               )}
@@ -241,8 +289,8 @@ export default function AddJob() {
                 value={formData.description}
                 onChange={handleChange}
                 className={`w-full px-5 py-4 border rounded-2xl focus:outline-none focus:ring-4 transition-all font-sans text-sm leading-relaxed ${aiFields.has('description')
-                    ? 'border-indigo-200 bg-indigo-50/30 focus:ring-indigo-100'
-                    : 'border-slate-200 focus:ring-slate-100'
+                  ? 'border-indigo-200 bg-indigo-50/30 focus:ring-indigo-100'
+                  : 'border-slate-200 focus:ring-slate-100'
                   }`}
                 placeholder="Paste the full job description here for AI analysis..."
               />

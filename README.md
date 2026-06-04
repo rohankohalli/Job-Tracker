@@ -69,22 +69,6 @@ npm run dev            # http://localhost:5173
 
 See `backend/.env.example` for all required variables.
 
-## API Reference
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/health` | Server health check |
-| `GET` | `/api/jobs` | List all jobs (`?status=saved\|applied\|rejected`) |
-| `GET` | `/api/jobs/:id` | Get a single job |
-| `POST` | `/api/jobs` | Save a new job |
-| `PATCH` | `/api/jobs/:id/status` | Update job status |
-| `DELETE` | `/api/jobs/:id` | Delete a job |
-| `POST` | `/api/jobs/:id/analyze` | Trigger Gemini JD analysis |
-| `GET` | `/api/jobs/:id/analysis` | Fetch stored analysis |
-| `POST` | `/api/jobs/:id/generate-message` | Generate cold DM / email draft |
-| `GET` | `/api/jobs/:id/messages` | List message drafts |
-| `PATCH` | `/api/messages/:id/approve` | Approve a message draft |
-
 ## Features
 
 1. **Job Tracking** — save jobs, update status (saved → applied → rejected)

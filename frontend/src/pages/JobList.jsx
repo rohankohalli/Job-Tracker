@@ -4,6 +4,19 @@ import { getJobs } from '../api/jobs'
 import StatusBadge from '../components/StatusBadge'
 import { Building2, Calendar, ChevronRight, Briefcase, Plus } from 'lucide-react'
 
+const FilterTab = ({ value, label, filter, setFilter }) => (
+  <button
+    onClick={() => setFilter(value)}
+    className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
+      filter === value 
+        ? 'bg-primary text-white shadow-md' 
+        : 'text-slate-500 hover:bg-slate-100'
+    }`}
+  >
+    {label}
+  </button>
+)
+
 export default function JobList() {
   const [jobs, setJobs] = useState([])
   const [filter, setFilter] = useState('all') // 'all', 'saved', 'applied', 'rejected'
@@ -11,34 +24,20 @@ export default function JobList() {
   const [error, setError] = useState(null)
 
   useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true)
+      try {
+        const statusParam = filter === 'all' ? undefined : filter
+        const data = await getJobs(statusParam)
+        setJobs(data)
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
     fetchData()
   }, [filter])
-
-  const fetchData = async () => {
-    setLoading(true)
-    try {
-      const statusParam = filter === 'all' ? undefined : filter
-      const data = await getJobs(statusParam)
-      setJobs(data)
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const FilterTab = ({ value, label }) => (
-    <button
-      onClick={() => setFilter(value)}
-      className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
-        filter === value 
-          ? 'bg-primary text-white shadow-md' 
-          : 'text-slate-500 hover:bg-slate-100'
-      }`}
-    >
-      {label}
-    </button>
-  )
 
   if (error) return <div className="text-center py-10 text-red-500">Error: {error}</div>
 
@@ -62,10 +61,10 @@ export default function JobList() {
 
       {/* Filter Bar */}
       <div className="flex bg-white p-1.5 rounded-xl border border-slate-200 w-fit shadow-sm">
-        <FilterTab value="all" label="All Jobs" />
-        <FilterTab value="saved" label="Saved" />
-        <FilterTab value="applied" label="Applied" />
-        <FilterTab value="rejected" label="Rejected" />
+        <FilterTab value="all" label="All Jobs" filter={filter} setFilter={setFilter} />
+        <FilterTab value="saved" label="Saved" filter={filter} setFilter={setFilter} />
+        <FilterTab value="applied" label="Applied" filter={filter} setFilter={setFilter} />
+        <FilterTab value="rejected" label="Rejected" filter={filter} setFilter={setFilter} />
       </div>
       
       {loading ? (

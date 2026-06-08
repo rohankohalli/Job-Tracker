@@ -21,25 +21,24 @@ export default function JobDetail() {
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getJobById(id)
+        setJob(data)
+        setEditData({ 
+          title: data.title, 
+          company: data.company, 
+          url: data.url || '', 
+          description: data.description || '' 
+        })
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
     fetchData()
   }, [id])
-
-  const fetchData = async () => {
-    try {
-      const data = await getJobById(id)
-      setJob(data)
-      setEditData({ 
-        title: data.title, 
-        company: data.company, 
-        url: data.url || '', 
-        description: data.description || '' 
-      })
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const handleStatusChange = async (e) => {
     const newStatus = e.target.value

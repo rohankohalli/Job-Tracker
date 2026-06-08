@@ -2,6 +2,21 @@ import { useState, useEffect } from 'react'
 import { getResumeScore, scoreResume, rescoreJob } from '../api/scoring'
 import { Target, AlertCircle, RefreshCw, BarChart3, CheckCircle2, XCircle, Info } from 'lucide-react'
 
+const ScoreBar = ({ label, score, max, color }) => (
+  <div className="space-y-1.5">
+    <div className="flex justify-between text-xs font-bold text-slate-600 uppercase tracking-tight">
+      <span>{label}</span>
+      <span>{score} / {max}</span>
+    </div>
+    <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+      <div 
+        className={`h-full ${color} transition-all duration-1000 ease-out`} 
+        style={{ width: `${(score / max) * 100}%` }}
+      />
+    </div>
+  </div>
+)
+
 export default function ScoreCard({ jobId, isAnalyzed }) {
   const [resume, setResume] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -10,21 +25,20 @@ export default function ScoreCard({ jobId, isAnalyzed }) {
   const [text, setText] = useState('')
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getResumeScore(jobId)
+        setResume(data)
+      } catch (err) {
+        if (!err.message.includes('No resume found')) {
+          console.error(err)
+        }
+      } finally {
+        setLoading(false)
+      }
+    }
     fetchData()
   }, [jobId])
-
-  const fetchData = async () => {
-    try {
-      const data = await getResumeScore(jobId)
-      setResume(data)
-    } catch (err) {
-      if (!err.message.includes('No resume found')) {
-        console.error(err)
-      }
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const handleScore = async (e) => {
     e.preventDefault()
@@ -98,20 +112,7 @@ export default function ScoreCard({ jobId, isAnalyzed }) {
   const exp = resume.explanation || {}
   const breakdown = exp.breakdown || {}
 
-  const ScoreBar = ({ label, score, max, color }) => (
-    <div className="space-y-1.5">
-      <div className="flex justify-between text-xs font-bold text-slate-600 uppercase tracking-tight">
-        <span>{label}</span>
-        <span>{score} / {max}</span>
-      </div>
-      <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-        <div 
-          className={`h-full ${color} transition-all duration-1000 ease-out`} 
-          style={{ width: `${(score / max) * 100}%` }}
-        />
-      </div>
-    </div>
-  )
+  // ScoreBar component is declared outside ScoreCard to prevent state resets and comply with React rules.
 
   return (
     <div className="bg-white border rounded-xl overflow-hidden shadow-md">
@@ -153,11 +154,58 @@ export default function ScoreCard({ jobId, isAnalyzed }) {
 
         {/* Multi-Factor Breakdown */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
-          <ScoreBar label="Skill Alignment" score={breakdown.skill_match || 0} max={40} color="bg-blue-500" />
-          <ScoreBar label="Experience Fit" score={breakdown.experience_fit || 0} max={30} color="bg-indigo-500" />
-          <ScoreBar label="Role Relevance" score={breakdown.role_relevance || 0} max={20} color="bg-emerald-500" />
-          <ScoreBar label="Quality & Clarity" score={breakdown.overall_quality || 0} max={10} color="bg-amber-400" />
+          <ScoreBar label="Skill Alignment" score={breakdown.skill_match || 0} max={50} color="bg-blue-500" />
+          <ScoreBar label="Job Title Relevance" score={breakdown.title_match || 0} max={15} color="bg-indigo-500" />
+          <ScoreBar label="Experience Fit" score={breakdown.experience_fit || 0} max={20} color="bg-emerald-500" />
+          <ScoreBar label="Resume Quality & Ed." score={breakdown.profile_quality || 0} max={15} color="bg-amber-400" />
         </div>
+
+        {/* Keyphrase Match Lists */}
+        {((resume.explanation?.matched_skills && resume.explanation.matched_skills.length > 0) || 
+          (resume.explanation?.missing_skills && resume.explanation.missing_skills.length > 0)) && (
+          <div className="space-y-4 pt-6 border-t border-slate-100">
+            <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">ATS Keyword Scanner</h4>
+            <div className="grid grid-cols-1 gap-4">
+              {resume.explanation.matched_skills?.length > 0 && (
+                <div className="space-y-2">
+                  <span className="text-xs font-bold text-green-700 flex items-center gap-1">
+                    <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                    Matched Keywords ({resume.explanation.matched_skills.length})
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {resume.explanation.matched_skills.map((skill, index) => (
+                      <span 
+                        key={index}
+                        className="px-2.5 py-1 bg-green-50 text-green-700 border border-green-200/60 rounded-lg text-xs font-semibold hover:bg-green-100/70 hover:scale-102 transition-all shadow-xs cursor-default"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {resume.explanation.missing_skills?.length > 0 && (
+                <div className="space-y-2">
+                  <span className="text-xs font-bold text-amber-600 flex items-center gap-1">
+                    <span className="h-2 w-2 rounded-full bg-amber-500" />
+                    Missing Keywords ({resume.explanation.missing_skills.length})
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {resume.explanation.missing_skills.map((skill, index) => (
+                      <span 
+                        key={index}
+                        className="px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200/60 rounded-lg text-xs font-semibold hover:bg-amber-100/70 hover:scale-102 transition-all shadow-xs cursor-default"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Detailed Insights */}
         {exp.summary && (

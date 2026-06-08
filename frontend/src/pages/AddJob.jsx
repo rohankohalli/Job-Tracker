@@ -14,35 +14,15 @@ export default function AddJob() {
   // Track which fields were AI-populated for a subtle highlight
   const [aiFields, setAiFields] = useState(new Set())
 
-  const [formData, setFormData] = useState({
-    title: '',
-    company: '',
-    url: '',
-    description: ''
-  })
-
-  useEffect(() => {
+  const [formData, setFormData] = useState(() => {
     const params = new URLSearchParams(window.location.search)
-    const urlParam = params.get('url')
-    const titleParam = params.get('title')
-    const companyParam = params.get('company')
-    const descParam = params.get('description')
-
-    if (urlParam || titleParam || companyParam || descParam) {
-      setFormData({
-        title: titleParam || '',
-        company: companyParam || '',
-        url: urlParam || '',
-        description: descParam || ''
-      })
-
-      // If we ONLY have a URL and no description, execute server-side capture.
-      // If we already have the description extracted by the bookmarklet, we skip server capture.
-      if (urlParam && !descParam) {
-        triggerAutoCapture(urlParam)
-      }
+    return {
+      title: params.get('title') || '',
+      company: params.get('company') || '',
+      url: params.get('url') || '',
+      description: params.get('description') || ''
     }
-  }, [])
+  })
 
   const triggerAutoCapture = async (url) => {
     setCapturing(true)
@@ -68,6 +48,19 @@ export default function AddJob() {
       setCapturing(false)
     }
   }
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const urlParam = params.get('url')
+    const descParam = params.get('description')
+
+    if (urlParam && !descParam) {
+      const timer = setTimeout(() => {
+        triggerAutoCapture(urlParam)
+      }, 0)
+      return () => clearTimeout(timer)
+    }
+  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target

@@ -71,6 +71,40 @@ export default function JobSearch() {
     }
   }
 
+  const getPageNumbers = () => {
+    const pages = []
+    const range = 1 // Number of neighbor pages to show around active page
+    for (let i = 1; i <= totalPages; i++) {
+      if (
+        i === 1 ||
+        i === totalPages ||
+        (i >= page - range && i <= page + range)
+      ) {
+        pages.push(i)
+      } else if (pages[pages.length - 1] !== '...') {
+        pages.push('...')
+      }
+    }
+
+    // Clean up single-digit gaps replaced by '...' (e.g. [1, '...', 3] becomes [1, 2, 3])
+    const cleanPages = []
+    for (let idx = 0; idx < pages.length; idx++) {
+      const current = pages[idx]
+      if (current === '...') {
+        const prev = pages[idx - 1]
+        const next = pages[idx + 1]
+        if (typeof prev === 'number' && typeof next === 'number' && next - prev === 2) {
+          cleanPages.push(prev + 1)
+        } else {
+          cleanPages.push('...')
+        }
+      } else {
+        cleanPages.push(current)
+      }
+    }
+    return cleanPages
+  }
+
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <div className="text-center space-y-4 max-w-2xl mx-auto">
@@ -192,37 +226,52 @@ export default function JobSearch() {
 
           {/* Pagination Controls */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-3 pt-4">
+            <div className="flex flex-wrap items-center justify-between md:justify-center gap-2 md:gap-4 pt-6 border-t border-slate-100">
               <button
                 onClick={() => handlePageChange(page - 1)}
                 disabled={page <= 1 || searching}
-                className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl border-2 border-slate-200 font-bold text-slate-600 hover:border-indigo-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                className="flex items-center justify-center gap-1.5 px-3 md:px-5 py-2 md:py-2.5 rounded-xl border-2 border-slate-200 font-bold text-slate-600 hover:border-indigo-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer bg-white hover:bg-slate-50 text-sm md:text-base shrink-0"
               >
-                <ChevronLeft className="w-4 h-4" /> Prev
+                <ChevronLeft className="w-4 h-4" /> <span className="hidden md:inline">Prev</span>
               </button>
 
-              <div className="flex items-center gap-2">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-                  <button
-                    key={p}
-                    onClick={() => handlePageChange(p)}
-                    disabled={searching}
-                    className={`w-9 h-9 rounded-lg font-bold text-sm transition-all disabled:cursor-not-allowed ${p === page
-                        ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200'
-                        : 'border border-slate-200 text-slate-500 hover:border-indigo-300 hover:text-indigo-600'
-                      }`}
-                  >
-                    {p}
-                  </button>
-                ))}
+              {/* Desktop page numbers */}
+              <div className="hidden md:flex items-center gap-2 flex-wrap justify-center">
+                {getPageNumbers().map((p, index) => {
+                  if (p === '...') {
+                    return (
+                      <span key={`ellipsis-${index}`} className="px-2 text-slate-400 font-bold select-none">
+                        ...
+                      </span>
+                    )
+                  }
+                  return (
+                    <button
+                      key={p}
+                      onClick={() => handlePageChange(p)}
+                      disabled={searching}
+                      className={`w-9 h-9 rounded-xl font-bold text-sm transition-all disabled:cursor-not-allowed cursor-pointer ${p === page
+                          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200'
+                          : 'border border-slate-200 text-slate-500 hover:border-indigo-300 hover:text-indigo-600 bg-white hover:bg-slate-50'
+                        }`}
+                    >
+                      {p}
+                    </button>
+                  )
+                })}
               </div>
+
+              {/* Mobile page indicator */}
+              <span className="md:hidden text-sm font-bold text-slate-500 select-none">
+                Page {page} of {totalPages}
+              </span>
 
               <button
                 onClick={() => handlePageChange(page + 1)}
                 disabled={page >= totalPages || searching}
-                className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl border-2 border-slate-200 font-bold text-slate-600 hover:border-indigo-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                className="flex items-center justify-center gap-1.5 px-3 md:px-5 py-2 md:py-2.5 rounded-xl border-2 border-slate-200 font-bold text-slate-600 hover:border-indigo-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer bg-white hover:bg-slate-50 text-sm md:text-base shrink-0"
               >
-                Next <ChevronRight className="w-4 h-4" />
+                <span className="hidden md:inline">Next</span> <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           )}

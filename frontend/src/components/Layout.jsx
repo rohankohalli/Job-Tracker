@@ -4,12 +4,12 @@ import { Plus, LayoutGrid, Target, Search } from 'lucide-react'
 function CatalystLogo({ className = 'w-8 h-8' }) {
   return (
     <svg className={className} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="48" height="48" rx="11" fill="#0F172A"/>
-      <circle cx="21" cy="24" r="11" stroke="#22D3EE" strokeWidth="3"/>
-      <circle cx="21" cy="24" r="8" stroke="white" strokeWidth="1" opacity="0.3"/>
-      <path d="M29 32L36 39" stroke="#22D3EE" strokeWidth="4" strokeLinecap="round"/>
-      <path d="M30 18L38 10M38 10H32M38 10V16" stroke="#22D3EE" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M21 18L18 24H24L21 30" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <rect width="48" height="48" rx="11" fill="#0F172A" />
+      <circle cx="21" cy="24" r="11" stroke="#22D3EE" strokeWidth="3" />
+      <circle cx="21" cy="24" r="8" stroke="white" strokeWidth="1" opacity="0.3" />
+      <path d="M29 32L36 39" stroke="#22D3EE" strokeWidth="4" strokeLinecap="round" />
+      <path d="M30 18L38 10M38 10H32M38 10V16" stroke="#22D3EE" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M21 18L18 24H24L21 30" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -31,7 +31,7 @@ export default function Layout() {
             </div>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="flex items-center gap-4 md:gap-8">
             <Link
               to="/"
               className={`text-sm font-bold transition-colors flex items-center gap-2 ${location.pathname === '/' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'
@@ -82,10 +82,6 @@ export default function Layout() {
             <span className="font-bold tracking-tight">Career Catalyst</span>
           </div>
           <p className="text-sm text-slate-400 font-medium">© 2026 AI Job Assistant. Elevate your application strategy.</p>
-          <div className="flex gap-6 text-sm font-bold text-slate-400">
-            <a href="#" className="hover:text-slate-900 transition-colors">Documentation</a>
-            <a href="#" className="hover:text-slate-900 transition-colors">Privacy</a>
-          </div>
         </div>
       </footer>
     </div>

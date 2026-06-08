@@ -74,5 +74,4 @@ See `backend/.env.example` for all required variables.
 1. **Job Tracking** — save jobs, update status (saved → applied → rejected)
 2. **JD Analysis** — Gemini extracts skills, requirements, red flags
 3. **Resume Scoring** — deterministic keyword match + AI explanation
-4. **Message Generator** — cold DM / email drafts
 5. **Human-in-the-Loop** — user reviews and approves before any action

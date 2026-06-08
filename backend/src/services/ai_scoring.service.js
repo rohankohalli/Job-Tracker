@@ -1,33 +1,31 @@
 import { generateJSON } from './llm.service.js'
 
-const SCORING_PROMPT = (analysis, resumeText) => `
+const SCORING_PROMPT = (jobTitle, analysis, resumeText, matchedSkills, missingSkills) => `
 You are an expert technical recruiter and ATS (Applicant Tracking System) optimizer.
-Your goal is to provide a realistic, professional score and analysis of a candidate's resume against a job description.
+Your goal is to provide a realistic, professional evaluation of a candidate's resume against the Job Title "${jobTitle}".
 
-Analyze the resume contextually. Don't just look for keywords; look for evidence of competence, seniority, and experience.
+We have already performed a deterministic keyphrase match for the required and nice-to-have skills.
+Here is the matching status of skills:
+- Matched Skills: ${matchedSkills.join(', ') || 'None'}
+- Missing Skills: ${missingSkills.join(', ') || 'None'}
+
+Please focus on evaluating the experience duration, seniority, and formatting quality of the candidate's resume.
 
 Return a JSON object exactly matching this schema:
 {
-  "total_score": 0-100,
-  "breakdown": {
-    "skill_match": 0-40,
-    "experience_fit": 0-30,
-    "role_relevance": 0-20,
-    "overall_quality": 0-10
-  },
+  "experience_fit": 0-20,
+  "profile_quality": 0-15,
   "summary": "Professional overview (2-3 sentences).",
   "strengths": ["string"],
   "gaps": ["string"],
   "recommendation": "Specific actionable advice."
 }
 
-Scoring Rubric:
-- Skill Match (40 pts): Technical stack alignment and depth.
-- Experience Fit (30 pts): Seniority, years of experience, and progression.
-- Role Relevance (20 pts): Industry alignment, title similarity, and responsibility overlap.
-- Overall Quality (10 pts): Clarity, impact-driven bullet points, and lack of filler.
+Scoring Rubric for your evaluation:
+- Experience Fit (20 pts): Seniority, years of experience required by the role, and progression in career history.
+- Profile Quality & Education (15 pts): Clarity, presence of impact-driven bullet points (using action verbs and quantifiable metrics), education relevance, and overall layout density.
 
-Job Analysis Context:
+Job Description Context:
 ${JSON.stringify(analysis, null, 2)}
 
 Resume Text:
@@ -39,6 +37,6 @@ ${resumeText}
 /**
  * Generate a realistic AI scoring and explanation for a resume.
  */
-export async function generateExplanation(analysis, resumeText) {
-  return await generateJSON(SCORING_PROMPT(analysis, resumeText))
+export async function generateExplanation(jobTitle, analysis, resumeText, matchedSkills, missingSkills) {
+  return await generateJSON(SCORING_PROMPT(jobTitle, analysis, resumeText, matchedSkills, missingSkills))
 }

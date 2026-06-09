@@ -17,7 +17,4 @@ export function setupAssociations(models) {
   Job.hasOne(PrepMaterial, { foreignKey: 'job_id', as: 'prepMaterial', onDelete: 'CASCADE' })
   PrepMaterial.belongsTo(Job, { foreignKey: 'job_id', as: 'job' })
 
-  // Job <-> Message (One-to-Many)
-  Job.hasMany(Message, { foreignKey: 'job_id', as: 'messages', onDelete: 'CASCADE' })
-  Message.belongsTo(Job, { foreignKey: 'job_id', as: 'job' })
 }

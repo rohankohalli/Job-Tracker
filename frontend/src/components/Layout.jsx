@@ -18,7 +18,7 @@ export default function Layout() {
   const location = useLocation()
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-900">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans text-slate-900 selection:bg-blue-100 selection:text-blue-900">
       <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 group">
@@ -27,7 +27,7 @@ export default function Layout() {
             </div>
             <div className="flex flex-col">
               <span className="font-black text-lg tracking-tight leading-none text-slate-900">Career Catalyst</span>
-              <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest mt-0.5">AI Job Copilot</span>
+              <span className="text-[10px] font-black text-blue-900 uppercase mt-0.5">AI Job Copilot</span>
             </div>
           </Link>
 

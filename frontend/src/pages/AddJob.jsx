@@ -160,19 +160,19 @@ export default function AddJob() {
               </div>
               <div>
                 <h3 className="text-xl font-bold text-white tracking-tight leading-none">Magic Quick Fill</h3>
-                <p className="text-indigo-100/80 text-xs font-bold uppercase tracking-widest mt-1">Powered by Gemini AI</p>
+                <p className="text-blue-100/80 text-xs font-bold uppercase tracking-widest mt-1">Powered by Gemini AI</p>
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1 group">
-                <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-300" />
+                <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-300" />
                 <input
                   type="url"
                   name="url"
                   value={formData.url}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-4 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white placeholder:text-indigo-200/50 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all font-medium"
+                  className="w-full pl-11 pr-4 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white placeholder:text-blue-200/50 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all font-medium"
                   placeholder="Paste LinkedIn, Indeed, or Careers URL..."
                 />
               </div>
@@ -184,7 +184,7 @@ export default function AddJob() {
               >
                 {capturing ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
                     Capturing...
                   </>
                 ) : (
@@ -195,14 +195,14 @@ export default function AddJob() {
                 )}
               </button>
             </div>
-            <p className="text-xs text-indigo-100/60 mt-4 font-medium flex items-center gap-1.5">
+            <p className="text-xs text-blue-100/60 mt-4 font-medium flex items-center gap-1.5">
               <AlertCircle className="w-3.5 h-3.5" /> Automatically extracts Title, Company, and full JD from the link.
             </p>
           </div>
 
           {/* Decorative Elements */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-400/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-400/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl pointer-events-none" />
         </div>
 
         {/* Manual Form Section */}
@@ -226,13 +226,13 @@ export default function AddJob() {
                   value={formData.title}
                   onChange={handleChange}
                   className={`w-full px-5 py-3.5 border rounded-2xl focus:outline-none focus:ring-4 transition-all font-medium ${aiFields.has('title')
-                    ? 'border-indigo-200 bg-indigo-50/30 focus:ring-indigo-100'
+                    ? 'border-blue-200 bg-blue-50/30 focus:ring-blue-100'
                     : 'border-slate-200 focus:ring-slate-100'
                     }`}
                   placeholder="e.g. Software Engineer"
                 />
                 {aiFields.has('title') && (
-                  <Sparkles className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400 pointer-events-none" />
+                  <Sparkles className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400 pointer-events-none" />
                 )}
               </div>
             </div>
@@ -247,13 +247,13 @@ export default function AddJob() {
                   value={formData.company}
                   onChange={handleChange}
                   className={`w-full px-5 py-3.5 border rounded-2xl focus:outline-none focus:ring-4 transition-all font-medium ${aiFields.has('company')
-                    ? 'border-indigo-200 bg-indigo-50/30 focus:ring-indigo-100'
+                    ? 'border-blue-200 bg-blue-50/30 focus:ring-blue-100'
                     : 'border-slate-200 focus:ring-slate-100'
                     }`}
                   placeholder="e.g. TCS"
                 />
                 {aiFields.has('company') && (
-                  <Sparkles className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-400 pointer-events-none" />
+                  <Sparkles className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400 pointer-events-none" />
                 )}
               </div>
             </div>
@@ -267,9 +267,9 @@ export default function AddJob() {
                   type="button"
                   onClick={handleParse}
                   disabled={parsing}
-                  className="text-[10px] font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-800 disabled:opacity-50 flex items-center gap-1.5 transition-color cursor-pointer"
+                  className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:text-blue-800 disabled:opacity-50 flex items-center gap-1.5 transition-color cursor-pointer"
                 >
-                  <FileText className="w-5.5 h-5.5 cursor-pointer"/>
+                  <FileText className="w-5.5 h-5.5 cursor-pointer" />
                   {parsing ? 'Analyzing...' : 'Auto-Extract from JD'}
                 </button>
               )}
@@ -282,13 +282,13 @@ export default function AddJob() {
                 value={formData.description}
                 onChange={handleChange}
                 className={`w-full px-5 py-4 border rounded-2xl focus:outline-none focus:ring-4 transition-all font-sans text-sm leading-relaxed ${aiFields.has('description')
-                  ? 'border-indigo-200 bg-indigo-50/30 focus:ring-indigo-100'
+                  ? 'border-blue-200 bg-blue-50/30 focus:ring-blue-100'
                   : 'border-slate-200 focus:ring-slate-100'
                   }`}
                 placeholder="Paste the full job description here for AI analysis..."
               />
               {aiFields.has('description') && (
-                <Sparkles className="absolute right-4 top-4 w-4 h-4 text-indigo-400 pointer-events-none" />
+                <Sparkles className="absolute right-4 top-4 w-4 h-4 text-blue-400 pointer-events-none" />
               )}
             </div>
           </div>

@@ -152,7 +152,7 @@ export default function AddJob() {
 
       <div className="space-y-8">
         {/* Magic Capture Section */}
-        <div className="bg-linear-to-br from-indigo-600 to-violet-700 p-8 rounded-3xl shadow-xl shadow-indigo-200 relative overflow-hidden group">
+        <div className="bg-linear-to-br from-blue-600 to-blue-700 p-8 rounded-3xl shadow-xl shadow-blue-200 relative overflow-hidden group">
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 bg-white/20 backdrop-blur-md rounded-xl border border-white/30">
@@ -267,9 +267,9 @@ export default function AddJob() {
                   type="button"
                   onClick={handleParse}
                   disabled={parsing}
-                  className="text-[10px] font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-800 disabled:opacity-50 flex items-center gap-1.5 transition-colors"
+                  className="text-[10px] font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-800 disabled:opacity-50 flex items-center gap-1.5 transition-color cursor-pointer"
                 >
-                  <FileText className="w-5.5 h-5.5 cursor-pointer" />
+                  <FileText className="w-5.5 h-5.5 cursor-pointer"/>
                   {parsing ? 'Analyzing...' : 'Auto-Extract from JD'}
                 </button>
               )}

@@ -49,7 +49,7 @@ export default function Layout() {
               Discover
             </Link>
             <Link
-              to="/add"
+              to="/addjob"
               className={`text-sm font-bold transition-colors flex items-center gap-2 ${location.pathname === '/add' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'
                 }`}
             >
@@ -59,8 +59,7 @@ export default function Layout() {
           </nav>
 
           <div className="flex items-center gap-4">
-            <Link
-              to="/add"
+            <Link to="/addjob"
               className="hidden sm:flex items-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded-2xl hover:bg-slate-800 transition-all text-sm font-bold shadow-lg shadow-slate-200"
             >
               <Plus className="w-4 h-4" />

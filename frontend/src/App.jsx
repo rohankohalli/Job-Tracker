@@ -11,7 +11,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<JobList />} />
         <Route path="search" element={<JobSearch />} />
-        <Route path="add" element={<AddJob />} />
+        <Route path="addjob" element={<AddJob />} />
         <Route path="jobs/:id" element={<JobDetail />} />
       </Route>
     </Routes>

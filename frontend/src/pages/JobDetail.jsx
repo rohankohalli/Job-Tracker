@@ -95,7 +95,7 @@ export default function JobDetail() {
                 className="text-2xl font-bold text-slate-900 w-full border-b focus:outline-none focus:border-primary"
               />
               <div className="flex flex-wrap gap-4 items-center">
-                <div className="flex items-center gap-1.5 text-slate-600 border-b min-w-[200px]">
+                <div className="flex items-center gap-1.5 text-slate-600 border-b min-w-50">
                   <Building2 className="w-4 h-4" />
                   <input 
                     value={editData.company}
@@ -103,7 +103,7 @@ export default function JobDetail() {
                     className="focus:outline-none w-full"
                   />
                 </div>
-                <div className="flex items-center gap-1.5 text-slate-600 border-b min-w-[200px]">
+                <div className="flex items-center gap-1.5 text-slate-600 border-b min-w-50">
                   <LinkIcon className="w-4 h-4" />
                   <input 
                     value={editData.url}
@@ -113,7 +113,7 @@ export default function JobDetail() {
                   />
                 </div>
               </div>
-              <div className="flex gap-2 mt-2">
+              <div className="flex gap-2 mt-2 cursor-pointer">
                 <button 
                   onClick={() => handleSave('header')}
                   disabled={saving}
@@ -135,7 +135,7 @@ export default function JobDetail() {
                 <h1 className="text-2xl font-bold text-slate-900">{job.title}</h1>
                 <button 
                   onClick={() => setIsEditingHeader(true)}
-                  className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-primary transition-all"
+                  className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-primary transition-all cursor-pointer"
                 >
                   <Pencil className="w-4 h-4" />
                 </button>
@@ -221,7 +221,7 @@ export default function JobDetail() {
                   </div>
                 </div>
               ) : (
-                <div className="max-h-[500px] overflow-y-auto whitespace-pre-wrap text-sm text-slate-600 font-sans leading-relaxed">
+                <div className="max-h-125 overflow-y-auto whitespace-pre-wrap text-sm text-slate-600 font-sans leading-relaxed">
                   {job.description || <span className="italic text-slate-400">No description provided. Click the pencil icon to add one.</span>}
                 </div>
               )}

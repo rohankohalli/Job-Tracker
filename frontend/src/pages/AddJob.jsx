@@ -180,7 +180,7 @@ export default function AddJob() {
                 type="button"
                 onClick={handleCapture}
                 disabled={capturing || !formData.url}
-                className="bg-white text-indigo-700 px-8 py-4 rounded-2xl font-bold hover:bg-indigo-50 disabled:opacity-50 transition-all shadow-lg flex items-center justify-center gap-2"
+                className="bg-white text-blue-500 px-8 py-4 rounded-2xl font-bold hover:bg-blue-50 transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
               >
                 {capturing ? (
                   <>

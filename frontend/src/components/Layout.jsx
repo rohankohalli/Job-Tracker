@@ -26,8 +26,8 @@ export default function Layout() {
               <CatalystLogo className="w-10 h-10" />
             </div>
             <div className="flex flex-col">
-              <span className="font-black text-lg tracking-tight leading-none text-slate-900">Career Catalyst</span>
-              <span className="text-[10px] font-black text-blue-900 uppercase mt-0.5">AI Job Copilot</span>
+              <span className="font-black text-lg tracking-tight leading-none text-slate-900">Career Compass AI</span>
+              {/* <span className="text-[10px] font-black text-blue-900 uppercase mt-0.5">AI Job Copilot</span> */}
             </div>
           </Link>
 
@@ -78,7 +78,7 @@ export default function Layout() {
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-2.5 opacity-50 grayscale">
             <CatalystLogo className="w-6 h-6" />
-            <span className="font-bold tracking-tight">Career Catalyst</span>
+            <span className="font-bold tracking-tight">Career Compass AI</span>
           </div>
           <p className="text-sm text-slate-400 font-medium">© 2026 AI Job Assistant. Elevate your application strategy.</p>
         </div>

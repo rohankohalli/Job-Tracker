@@ -3,7 +3,6 @@ import { generateJSON } from './llm.service.js'
 
 const ANALYSIS_PROMPT = (jd) => `
 You are a job description parser. Analyze the following job description and return a JSON object with exactly this schema:
-
 {
   "required_skills": ["string"],
   "nice_to_have": ["string"],
@@ -26,12 +25,6 @@ ${jd}
 ---
 `
 
-/**
- * Run LLM analysis on a job's description and persist the result.
- * Returns the saved analysis row.
- * @param {number} jobId
- * @param {string} description
- */
 export async function analyzeAndSave(jobId, description) {
   const structured = await generateJSON(ANALYSIS_PROMPT(description))
 

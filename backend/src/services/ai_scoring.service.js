@@ -34,9 +34,7 @@ ${resumeText}
 ---
 `
 
-/**
- * Generate a realistic AI scoring and explanation for a resume.
- */
+// Generate a realistic AI scoring and explanation for a resume
 export async function generateExplanation(jobTitle, analysis, resumeText, matchedSkills, missingSkills) {
   return await generateJSON(SCORING_PROMPT(jobTitle, analysis, resumeText, matchedSkills, missingSkills))
 }

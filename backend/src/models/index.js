@@ -15,7 +15,6 @@ const db = {
   PrepMaterial: PrepMaterialModel(sequelize),
 }
 
-// Establish associations
 setupAssociations(db)
 
 export default db

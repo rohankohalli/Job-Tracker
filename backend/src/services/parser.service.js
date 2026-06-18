@@ -1,8 +1,5 @@
-import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
-
-const pdfParse = require('pdf-parse')
-const mammoth = require('mammoth')
+import { PDFParse } from 'pdf-parse'
+import mammoth from 'mammoth'
 
 /**
  * Parse uploaded resume file (PDF or DOCX) to extract raw text content.
@@ -18,8 +15,9 @@ export async function parseResumeFile(file) {
 
   if (mimetype === 'application/pdf') {
     try {
-      const data = await pdfParse(buffer)
-      return data.text.trim()
+      const parser = new PDFParse({ data: buffer })
+      const result = await parser.getText()
+      return result.text.trim()
     } catch (err) {
       throw new Error(`Failed to parse PDF file: ${err.message}`)
     }

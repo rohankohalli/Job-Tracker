@@ -81,9 +81,9 @@ export async function generateResumeTailor(jobId) {
 export async function getPrepMaterials(jobId) {
   const prep = await db.PrepMaterial.findOne({ where: { jobId } })
   if (!prep) return null
-  
+
   const row = prep.get({ plain: true })
-  
+
   const safeParse = (val) => {
     if (typeof val === 'string') {
       try {
@@ -109,7 +109,7 @@ export async function getPrepMaterials(jobId) {
 async function getContext(jobId) {
   const analysis = await analysisService.getAnalysisByJobId(jobId)
   const resume = await scoringService.getResumeByJobId(jobId)
-  
+
   if (!analysis) throw new Error('Job description must be analyzed first.')
   if (!resume) throw new Error('Resume must be scored first to identify gaps.')
 
@@ -124,11 +124,11 @@ async function getContext(jobId) {
 // Internal Helper
 async function savePrepMaterial(jobId, column, data) {
   const modelField = column === 'interview_prep' ? 'interviewPrep' : 'resumeTailor'
-  
+
   await db.PrepMaterial.upsert({
     jobId,
     [modelField]: data,
   })
-  
+
   return getPrepMaterials(jobId)
 }

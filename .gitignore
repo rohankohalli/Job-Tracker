@@ -19,5 +19,5 @@ npm-debug.log*
 .vscode/*
 !.vscode/extensions.json
 .idea/
-backend/docs/walkthrough_master.md
 .gitignore
+backend/src/scripts/check_pdf_keys.js

@@ -1,4 +1,18 @@
 import * as scoringService from '../services/scoring.service.js'
+import * as parserService from '../services/parser.service.js'
+
+export async function uploadAndParseResume(req, res, next) {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No resume file uploaded' })
+    }
+
+    const text = await parserService.parseResumeFile(req.file)
+    res.json({ text })
+  } catch (err) {
+    next(err)
+  }
+}
 
 export async function scoreResume(req, res, next) {
   try {

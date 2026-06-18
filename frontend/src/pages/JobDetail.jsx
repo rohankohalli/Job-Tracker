@@ -13,7 +13,7 @@ export default function JobDetail() {
   const [job, setJob] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  
+
   // Edit states
   const [isEditingHeader, setIsEditingHeader] = useState(false)
   const [isEditingDesc, setIsEditingDesc] = useState(false)
@@ -25,11 +25,11 @@ export default function JobDetail() {
       try {
         const data = await getJobById(id)
         setJob(data)
-        setEditData({ 
-          title: data.title, 
-          company: data.company, 
-          url: data.url || '', 
-          description: data.description || '' 
+        setEditData({
+          title: data.title,
+          company: data.company,
+          url: data.url || '',
+          description: data.description || ''
         })
       } catch (err) {
         setError(err.message)
@@ -89,41 +89,41 @@ export default function JobDetail() {
         <div className="flex-1">
           {isEditingHeader ? (
             <div className="space-y-3">
-              <input 
+              <input
                 value={editData.title}
-                onChange={e => setEditData({...editData, title: e.target.value})}
+                onChange={e => setEditData({ ...editData, title: e.target.value })}
                 className="text-2xl font-bold text-slate-900 w-full border-b focus:outline-none focus:border-primary"
               />
               <div className="flex flex-wrap gap-4 items-center">
                 <div className="flex items-center gap-1.5 text-slate-600 border-b min-w-50">
                   <Building2 className="w-4 h-4" />
-                  <input 
+                  <input
                     value={editData.company}
-                    onChange={e => setEditData({...editData, company: e.target.value})}
+                    onChange={e => setEditData({ ...editData, company: e.target.value })}
                     className="focus:outline-none w-full"
                   />
                 </div>
                 <div className="flex items-center gap-1.5 text-slate-600 border-b min-w-50">
                   <LinkIcon className="w-4 h-4" />
-                  <input 
+                  <input
                     value={editData.url}
                     placeholder="URL"
-                    onChange={e => setEditData({...editData, url: e.target.value})}
+                    onChange={e => setEditData({ ...editData, url: e.target.value })}
                     className="focus:outline-none w-full text-sm"
                   />
                 </div>
               </div>
-              <div className="flex gap-2 mt-2 cursor-pointer">
-                <button 
+              <div className="flex gap-2 mt-2">
+                <button
                   onClick={() => handleSave('header')}
                   disabled={saving}
-                  className="px-3 py-1 bg-primary text-white text-xs rounded hover:bg-primary-dark flex items-center gap-1"
+                  className="px-3 py-1 bg-primary text-white text-xs rounded hover:bg-primary-dark flex items-center gap-1 cursor-pointer"
                 >
                   <Save className="w-3 h-3" /> Save
                 </button>
-                <button 
+                <button
                   onClick={() => setIsEditingHeader(false)}
-                  className="px-3 py-1 bg-slate-100 text-slate-600 text-xs rounded hover:bg-slate-200 flex items-center gap-1"
+                  className="px-3 py-1 bg-slate-100 text-slate-600 text-xs rounded hover:bg-slate-200 flex items-center gap-1 cursor-pointer"
                 >
                   <X className="w-3 h-3" /> Cancel
                 </button>
@@ -133,7 +133,7 @@ export default function JobDetail() {
             <div className="group relative">
               <div className="flex items-start gap-2">
                 <h1 className="text-2xl font-bold text-slate-900">{job.title}</h1>
-                <button 
+                <button
                   onClick={() => setIsEditingHeader(true)}
                   className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-primary transition-all cursor-pointer"
                 >
@@ -153,11 +153,11 @@ export default function JobDetail() {
             </div>
           )}
         </div>
-        
+
         <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-lg border">
           <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Status</label>
-          <select 
-            value={job.status} 
+          <select
+            value={job.status}
             onChange={handleStatusChange}
             className="px-3 py-1.5 border border-slate-300 rounded-md text-sm font-medium bg-white focus:outline-none focus:ring-2 focus:ring-primary/50"
           >
@@ -166,9 +166,9 @@ export default function JobDetail() {
             <option value="rejected">Rejected</option>
           </select>
           <StatusBadge status={job.status} />
-          
+
           <div className="w-px h-6 bg-slate-300 mx-2"></div>
-          
+
           <button
             onClick={handleDelete}
             title="Delete Job"
@@ -182,12 +182,12 @@ export default function JobDetail() {
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <AnalysisPanel jobId={job.id} hasDescription={!!job.description} />
-          
+
           <div className="bg-white border rounded-xl overflow-hidden group">
             <div className="bg-slate-50 border-b p-4 flex justify-between items-center">
               <h3 className="font-semibold text-slate-800">Job Description</h3>
               {!isEditingDesc && (
-                <button 
+                <button
                   onClick={() => setIsEditingDesc(true)}
                   className="p-1 text-slate-400 hover:text-primary transition-colors"
                 >
@@ -198,21 +198,21 @@ export default function JobDetail() {
             <div className="p-4">
               {isEditingDesc ? (
                 <div className="space-y-3">
-                  <textarea 
+                  <textarea
                     value={editData.description}
-                    onChange={e => setEditData({...editData, description: e.target.value})}
+                    onChange={e => setEditData({ ...editData, description: e.target.value })}
                     rows={15}
                     className="w-full text-sm font-sans p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
                   />
                   <div className="flex gap-2">
-                    <button 
+                    <button
                       onClick={() => handleSave('desc')}
                       disabled={saving}
                       className="px-4 py-2 bg-primary text-white text-sm rounded hover:bg-primary-dark flex items-center gap-2"
                     >
                       <Save className="w-4 h-4" /> {saving ? 'Saving...' : 'Save Description'}
                     </button>
-                    <button 
+                    <button
                       onClick={() => setIsEditingDesc(false)}
                       className="px-4 py-2 bg-slate-100 text-slate-600 text-sm rounded hover:bg-slate-200"
                     >
@@ -228,7 +228,7 @@ export default function JobDetail() {
             </div>
           </div>
         </div>
-        
+
         <div className="space-y-6">
           <ScoreCard jobId={job.id} isAnalyzed={true} />
         </div>

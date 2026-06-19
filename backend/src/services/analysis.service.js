@@ -1,7 +1,7 @@
 import db from '../models/index.js'
 import { generateJSON } from './llm.service.js'
 
-const ANALYSIS_PROMPT = (jd) => `
+const Analysis_Prompt = (jd) => `
 You are a job description parser. Analyze the following job description and return a JSON object with exactly this schema:
 {
   "required_skills": ["string"],
@@ -26,7 +26,7 @@ ${jd}
 `
 
 export async function analyzeAndSave(jobId, description) {
-  const structured = await generateJSON(ANALYSIS_PROMPT(description))
+  const structured = await generateJSON(Analysis_Prompt(description))
 
   await db.JdAnalysis.upsert({
     jobId,
@@ -42,10 +42,6 @@ export async function analyzeAndSave(jobId, description) {
   return getAnalysisByJobId(jobId)
 }
 
-/**
- * Fetch the stored analysis for a job, or null if not yet analyzed.
- * @param {number} jobId
- */
 export async function getAnalysisByJobId(jobId) {
   const analysis = await db.JdAnalysis.findOne({
     where: { jobId },

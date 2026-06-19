@@ -2,18 +2,20 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
 
-// Primary Model (High-quality 3.5 series)
+// Primary Model (High-quality Flash model - resolves to 3.5 Flash)
 const primaryModel = genAI.getGenerativeModel({
-  model: 'gemini-3.5-flash',
+  model: 'gemini-flash-latest',
   generationConfig: {
+    /* force structured JSON output */
     responseMimeType: 'application/json',
   },
 })
 
-// Backup Model (Legacy 1.5 series, quieter servers)
+// Backup Model (Lite Flash model - resolves to 3.1 Flash Lite, quieter servers)
 const backupModel = genAI.getGenerativeModel({
-  model: 'gemini-1.5-flash',
+  model: 'gemini-flash-lite-latest',
   generationConfig: {
+    /* force structured JSON output */
     responseMimeType: 'application/json',
   },
 })
@@ -22,7 +24,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 /**
  * Send a prompt to Gemini and return the parsed JSON response.
- * Tries the primary model (3.5 Flash) with retries first, then falls back to the backup model (1.5 Flash).
+ * Tries the primary model (gemini-flash-latest) with retries first, then falls back to the backup model (gemini-flash-lite-latest).
  */
 export async function generateJSON(prompt) {
   const maxRetries = 2
@@ -45,7 +47,7 @@ export async function generateJSON(prompt) {
         continue
       }
 
-      console.warn(`Primary Model completely failed: ${err.message}. Cascading to Backup Model (gemini-1.5-flash)...`)
+      console.warn(`Primary Model completely failed: ${err.message}. Cascading to Backup Model (gemini-flash-lite-latest)...`)
       break // Break to fallback step
     }
   }
@@ -56,7 +58,7 @@ export async function generateJSON(prompt) {
     const text = result.response.text()
     return JSON.parse(text)
   } catch (backupErr) {
-    console.error(`LLM Error: Backup model [gemini-1.5-flash] also failed:`, backupErr.message)
+    console.error(`LLM Error: Backup model [gemini-flash-lite-latest] also failed:`, backupErr.message)
     throw backupErr
   }
 }

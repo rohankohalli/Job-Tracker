@@ -3,7 +3,7 @@ import { generateJSON } from './llm.service.js'
 import * as analysisService from './analysis.service.js'
 import * as scoringService from './scoring.service.js'
 
-const INTERVIEW_PREP_PROMPT = (analysis, resume, missingSkills) => `
+const Interview_Prep_Prompt = (analysis, resume, missingSkills) => `
 You are an experienced hiring manager. Your tone is supportive, coaching, and professional.
 You are preparing a candidate for an interview for the role described below.
 
@@ -34,7 +34,7 @@ Candidate Resume:
 ${resume.content}
 `
 
-const RESUME_TAILOR_PROMPT = (analysis, resume, missingSkills) => `
+const Resume_Tailor_Prompt = (analysis, resume, missingSkills) => `
 You are an expert technical recruiter and resume writer. Your goal is to help the candidate pass ATS and keyword screeners WITHOUT fabricating experience.
 Look at the missing skills from the job description: ${missingSkills.join(', ') || 'minor gaps'}.
 Review the candidate's resume and:
@@ -68,13 +68,13 @@ ${resume.content}
 
 export async function generateInterviewPrep(jobId) {
   const { analysis, resume, missingSkills } = await getContext(jobId)
-  const result = await generateJSON(INTERVIEW_PREP_PROMPT(analysis, resume, missingSkills))
+  const result = await generateJSON(Interview_Prep_Prompt(analysis, resume, missingSkills))
   return await savePrepMaterial(jobId, 'interview_prep', result)
 }
 
 export async function generateResumeTailor(jobId) {
   const { analysis, resume, missingSkills } = await getContext(jobId)
-  const result = await generateJSON(RESUME_TAILOR_PROMPT(analysis, resume, missingSkills))
+  const result = await generateJSON(Resume_Tailor_Prompt(analysis, resume, missingSkills))
   return await savePrepMaterial(jobId, 'resume_tailor', result)
 }
 

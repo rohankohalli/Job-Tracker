@@ -21,3 +21,4 @@ npm-debug.log*
 .idea/
 .gitignore
 backend/src/scripts/check_pdf_keys.js
+backend/src/scripts/list_models.js

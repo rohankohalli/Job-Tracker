@@ -10,7 +10,7 @@ export default function PrepDashboard({ jobId, isScored }) {
   const [generatingTailor, setGeneratingTailor] = useState(false)
   const [error, setError] = useState(null)
   const [showFullPrep, setShowFullPrep] = useState(false)
-  
+
   // Resume Tailoring Workspace States
   const [showFullTailor, setShowFullTailor] = useState(false)
   const [originalResumeText, setOriginalResumeText] = useState('')
@@ -150,19 +150,19 @@ export default function PrepDashboard({ jobId, isScored }) {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h4 className="font-bold text-slate-700 flex items-center gap-2 text-sm uppercase tracking-tight">
-                <FileEdit className="w-4 h-4 text-emerald-500" /> 
+                <FileEdit className="w-4 h-4 text-emerald-500" />
                 Resume Optimization
               </h4>
               {prep?.resume_tailor ? (
-                <button 
+                <button
                   onClick={() => setShowFullTailor(true)}
                   className="bg-emerald-600 text-white px-4 py-1.5 text-xs rounded-lg hover:bg-emerald-700 font-bold transition-all flex items-center gap-1"
                 >
                   <Maximize2 className="w-3.5 h-3.5" /> Workspace
                 </button>
               ) : (
-                <button 
-                  onClick={handleGenTailor} 
+                <button
+                  onClick={handleGenTailor}
                   disabled={generatingTailor}
                   className="bg-emerald-600 text-white px-4 py-1.5 text-xs rounded-lg hover:bg-emerald-700 disabled:opacity-50 font-bold transition-all"
                 >
@@ -277,7 +277,7 @@ export default function PrepDashboard({ jobId, isScored }) {
                   <p className="text-xs text-slate-500 font-medium">Edit, copy, and download your customized resume below</p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => setShowFullTailor(false)}
                 className="p-2 hover:bg-slate-200 rounded-full transition-colors"
               >

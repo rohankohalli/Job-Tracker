@@ -7,11 +7,10 @@ import { Building2, Calendar, ChevronRight, Briefcase, Plus } from 'lucide-react
 const FilterTab = ({ value, label, filter, setFilter }) => (
   <button
     onClick={() => setFilter(value)}
-    className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
-      filter === value 
-        ? 'bg-primary text-white shadow-md' 
-        : 'text-slate-500 hover:bg-slate-100'
-    }`}
+    className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${filter === value
+      ? 'bg-primary text-white shadow-md'
+      : 'text-slate-500 hover:bg-slate-100'
+      }`}
   >
     {label}
   </button>
@@ -51,8 +50,8 @@ export default function JobList() {
           </h1>
           <p className="text-slate-500 mt-1 font-medium">Keep track of your career journey.</p>
         </div>
-        <Link 
-          to="/add" 
+        <Link
+          to="/addjob"
           className="bg-primary text-white px-5 py-2.5 rounded-xl hover:bg-primary-dark transition-all font-bold shadow-lg shadow-primary/20 flex items-center gap-2 w-fit"
         >
           <Plus className="w-5 h-5" /> Track New Job
@@ -66,7 +65,7 @@ export default function JobList() {
         <FilterTab value="applied" label="Applied" filter={filter} setFilter={setFilter} />
         <FilterTab value="rejected" label="Rejected" filter={filter} setFilter={setFilter} />
       </div>
-      
+
       {loading ? (
         <div className="grid gap-4">
           {[1, 2, 3].map(i => (
@@ -80,15 +79,15 @@ export default function JobList() {
           </div>
           <h2 className="text-xl font-bold text-slate-800 mb-2">No {filter !== 'all' ? filter : ''} jobs found</h2>
           <p className="text-slate-500 mb-8 max-w-xs mx-auto">Start tracking your applications to get AI-powered insights.</p>
-          <Link to="/add" className="bg-slate-900 text-white px-8 py-3 rounded-xl hover:bg-slate-800 transition-colors font-bold shadow-xl shadow-slate-200">
+          <Link to="/addjob" className="bg-slate-900 text-white px-8 py-3 rounded-xl hover:bg-slate-800 transition-colors font-bold shadow-xl shadow-slate-200">
             Track your first job
           </Link>
         </div>
       ) : (
         <div className="grid gap-4">
           {jobs.map((job) => (
-            <Link 
-              key={job.id} 
+            <Link
+              key={job.id}
               to={`/jobs/${job.id}`}
               className="block bg-white p-6 rounded-2xl border border-slate-200 hover:border-primary/40 hover:shadow-xl hover:shadow-slate-200 transition-all group relative overflow-hidden"
             >

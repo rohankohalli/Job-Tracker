@@ -50,7 +50,7 @@ export default function Layout() {
             </Link>
             <Link
               to="/addjob"
-              className={`text-sm font-bold transition-colors flex items-center gap-2 ${location.pathname === '/add' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'
+              className={`text-sm font-bold transition-colors flex items-center gap-2 ${location.pathname === '/addjob' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'
                 }`}
             >
               <Target className="w-4 h-4" />

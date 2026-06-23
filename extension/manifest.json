@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Career Compass AI Scraper",
+  "version": "1.0",
+  "description": "Scrapes and parses job descriptions from browser tabs directly into Career Compass AI.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "action": {
+    "default_popup": "src/popup.html"
+  }
+}

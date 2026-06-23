@@ -13,7 +13,10 @@ These should include a mix of:
 2. Behavioral questions regarding their past projects.
 3. Questions addressing the gaps in their resume (${missingSkills.length > 0 ? missingSkills.join(', ') : 'minor gaps'}).
 
-For each question, provide a STAR (Situation, Task, Action, Result) method coaching tip on how they should answer.
+For each question, provide a tailored coaching tip on how they should structure their answer:
+- For BEHAVIORAL questions, suggest using the STAR (Situation, Task, Action, Result) method.
+- For TECHNICAL or system design questions, suggest discussing core concepts, trade-offs, and naming specific libraries/APIs.
+- For RESUME GAPS or experience-related questions, suggest how to positively frame their self-directed learning or transferable skills.
 
 Return ONLY a JSON object matching this schema:
 {
@@ -22,7 +25,7 @@ Return ONLY a JSON object matching this schema:
     {
       "question": "The interview question",
       "likely_reason": "Briefly explain why this is a likely question for this specific JD/Resume combination",
-      "star_coaching": "How to structure the answer using STAR"
+      "coaching_tip": "The structured answer tip tailored to this question's type"
     }
   ]
 }

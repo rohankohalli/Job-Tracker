@@ -130,8 +130,8 @@ export default function PrepDashboard({ jobId, isScored }) {
                             <ChevronRight className="w-3 h-3 text-blue-400" /> {q.likely_reason}
                           </div>
                           <div className="bg-blue-50/50 p-3 rounded-lg text-xs text-blue-900 border border-blue-50">
-                            <span className="font-black uppercase tracking-tighter mr-2 text-[9px] bg-blue-100 px-1.5 py-0.5 rounded text-blue-600">STAR TIP</span>
-                            {q.star_coaching}
+                            <span className="font-black uppercase tracking-tighter mr-2 text-[9px] bg-blue-100 px-1.5 py-0.5 rounded text-blue-600">COACHING TIP</span>
+                            {q.coaching_tip || q.star_coaching}
                           </div>
                         </div>
                       ))}
@@ -246,8 +246,8 @@ export default function PrepDashboard({ jobId, isScored }) {
                           </p>
                         </div>
                         <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                          <h5 className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-3">Suggested STAR Response</h5>
-                          <p className="text-slate-700 leading-relaxed font-medium">{q.star_coaching}</p>
+                          <h5 className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-3">Suggested Coaching Guide</h5>
+                          <p className="text-slate-700 leading-relaxed font-medium">{q.coaching_tip || q.star_coaching}</p>
                         </div>
                       </div>
                     </div>

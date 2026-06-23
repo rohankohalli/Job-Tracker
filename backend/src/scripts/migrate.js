@@ -8,7 +8,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const migrations = [
   '001_create_jobs.sql',
   '002_create_jd_analyses.sql',
-  '003_create_messages.sql',
   '004_create_resumes.sql',
   '005_create_prep_materials.sql',
 ]

@@ -1,7 +1,3 @@
-/**
- * Set up associations between all database models.
- * @param {object} models - Object containing registered Sequelize models
- */
 export function setupAssociations(models) {
   const { Job, JdAnalysis, Resume, PrepMaterial, Message } = models
 
@@ -16,8 +12,4 @@ export function setupAssociations(models) {
   // Job <-> PrepMaterial (One-to-One)
   Job.hasOne(PrepMaterial, { foreignKey: 'job_id', as: 'prepMaterial', onDelete: 'CASCADE' })
   PrepMaterial.belongsTo(Job, { foreignKey: 'job_id', as: 'job' })
-
-  // Job <-> Message (One-to-Many)
-  Job.hasMany(Message, { foreignKey: 'job_id', as: 'messages', onDelete: 'CASCADE' })
-  Message.belongsTo(Job, { foreignKey: 'job_id', as: 'job' })
 }

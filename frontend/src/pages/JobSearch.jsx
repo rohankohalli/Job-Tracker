@@ -116,14 +116,14 @@ export default function JobSearch() {
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1 group">
             <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-indigo-400 group-focus-within:text-indigo-600 transition-colors" />
+              <Search className="h-5 w-5 text-blue-400 group-focus-within:text-blue-600 transition-colors" />
             </div>
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Job Title or Keyword (e.g. React)"
-              className="block w-full pl-14 pr-4 py-4 text-base border-2 border-slate-200 rounded-2xl bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all shadow-sm font-medium"
+              className="block w-full pl-14 pr-4 py-4 text-base border-2 border-slate-200 rounded-2xl bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all shadow-sm font-medium"
             />
           </div>
 
@@ -144,7 +144,7 @@ export default function JobSearch() {
         <button
           type="submit"
           disabled={searching || (!query.trim() && !location.trim())}
-          className="w-full py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 disabled:opacity-50 transition-colors shadow-md flex justify-center items-center gap-2"
+          className="w-full py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-md flex justify-center items-center gap-2"
         >
           {searching ? (
             <>
@@ -166,7 +166,7 @@ export default function JobSearch() {
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-slate-700">
               {total} result{total !== 1 ? 's' : ''} found
-              {committedQuery && <span className="text-indigo-500 ml-1">for "{committedQuery}"</span>}
+              {committedQuery && <span className="text-blue-500 ml-1">for "{committedQuery}"</span>}
               {committedLocation && <span className="text-emerald-500 ml-1">in {committedLocation}</span>}
             </h3>
             <span className="text-sm text-slate-400 font-medium">Page {page} of {totalPages}</span>
@@ -174,14 +174,14 @@ export default function JobSearch() {
 
           <div className="grid gap-4">
             {results.map((job) => (
-              <div key={job.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-indigo-300 transition-all group flex flex-col md:flex-row gap-6 md:items-center">
+              <div key={job.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-blue-300 transition-all group flex flex-col md:flex-row gap-6 md:items-center">
 
                 <div className="flex-1 space-y-3">
                   <h4 className="text-xl font-bold text-slate-900 leading-tight">{job.title}</h4>
 
                   <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-500">
                     <span className="flex items-center gap-1.5 text-slate-700">
-                      <Building2 className="w-4 h-4 text-indigo-400" /> {job.company}
+                      <Building2 className="w-4 h-4 text-blue-400" /> {job.company}
                     </span>
                     <span className="flex items-center gap-1.5">
                       <MapPin className="w-4 h-4 text-emerald-400" /> {job.location || 'Remote/Flexible'}
@@ -213,7 +213,7 @@ export default function JobSearch() {
                       href={job.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-center text-xs font-bold text-indigo-600 hover:text-indigo-800 py-2 uppercase tracking-widest"
+                      className="text-center text-xs font-bold text-blue-600 hover:text-blue-800 py-2 uppercase tracking-widest"
                     >
                       View Original
                     </a>
@@ -230,7 +230,7 @@ export default function JobSearch() {
               <button
                 onClick={() => handlePageChange(page - 1)}
                 disabled={page <= 1 || searching}
-                className="flex items-center justify-center gap-1.5 px-3 md:px-5 py-2 md:py-2.5 rounded-xl border-2 border-slate-200 font-bold text-slate-600 hover:border-indigo-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer bg-white hover:bg-slate-50 text-sm md:text-base shrink-0"
+                className="flex items-center justify-center gap-1.5 px-3 md:px-5 py-2 md:py-2.5 rounded-xl border-2 border-slate-200 font-bold text-slate-600 hover:border-blue-400 hover:text-blue-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer bg-white hover:bg-slate-50 text-sm md:text-base shrink-0"
               >
                 <ChevronLeft className="w-4 h-4" /> <span className="hidden md:inline">Prev</span>
               </button>
@@ -251,8 +251,8 @@ export default function JobSearch() {
                       onClick={() => handlePageChange(p)}
                       disabled={searching}
                       className={`w-9 h-9 rounded-xl font-bold text-sm transition-all disabled:cursor-not-allowed cursor-pointer ${p === page
-                          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200'
-                          : 'border border-slate-200 text-slate-500 hover:border-indigo-300 hover:text-indigo-600 bg-white hover:bg-slate-50'
+                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
+                        : 'border border-slate-200 text-slate-500 hover:border-blue-300 hover:text-blue-600 bg-white hover:bg-slate-50'
                         }`}
                     >
                       {p}
@@ -269,7 +269,7 @@ export default function JobSearch() {
               <button
                 onClick={() => handlePageChange(page + 1)}
                 disabled={page >= totalPages || searching}
-                className="flex items-center justify-center gap-1.5 px-3 md:px-5 py-2 md:py-2.5 rounded-xl border-2 border-slate-200 font-bold text-slate-600 hover:border-indigo-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer bg-white hover:bg-slate-50 text-sm md:text-base shrink-0"
+                className="flex items-center justify-center gap-1.5 px-3 md:px-5 py-2 md:py-2.5 rounded-xl border-2 border-slate-200 font-bold text-slate-600 hover:border-blue-400 hover:text-blue-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer bg-white hover:bg-slate-50 text-sm md:text-base shrink-0"
               >
                 <span className="hidden md:inline">Next</span> <ChevronRight className="w-4 h-4" />
               </button>

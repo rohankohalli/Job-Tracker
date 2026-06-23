@@ -142,7 +142,7 @@ export async function scoreAndSaveResume(jobId, resumeText) {
   // 3. AI Evaluation for the remaining 35 points (Experience & Formatting/Quality)
   const allMatchedSkills = [...matchedRequired, ...matchedNice]
   const allMissingSkills = [...missingRequired, ...missingNice]
-  
+
   const aiResult = await aiScoringService.generateExplanation(
     jobTitle,
     analysis,
@@ -186,7 +186,7 @@ export async function scoreAndSaveResume(jobId, resumeText) {
 export async function getResumeByJobId(jobId) {
   const resume = await db.Resume.findOne({ where: { jobId } })
   if (!resume) return null
-  
+
   const row = resume.get({ plain: true })
   let parsedExplanation = {}
   if (row.explanation) {

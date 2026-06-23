@@ -1,10 +1,21 @@
 import { Router } from 'express'
+import multer from 'multer'
 import * as scoringController from '../controllers/scoring.controller.js'
 
 const router = Router({ mergeParams: true })
 
-router.post('/score',   scoringController.scoreResume) // POST /api/jobs/:id/score
-router.get('/resume',   scoringController.getResume)   // GET  /api/jobs/:id/resume
-router.post('/rescore', scoringController.rescore)    // POST /api/jobs/:id/rescore
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+})
+
+router.post('/score', scoringController.scoreResume)
+router.get('/resume', scoringController.getResume)
+router.post('/rescore', scoringController.rescore)
+
+// File upload and parse endpoint
+router.post('/resume/upload', upload.single('resume'), scoringController.uploadAndParseResume) // POST /api/jobs/:id/resume/upload
 
 export default router

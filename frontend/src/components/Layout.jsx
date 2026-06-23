@@ -18,7 +18,7 @@ export default function Layout() {
   const location = useLocation()
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-900">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans text-slate-900 selection:bg-blue-100 selection:text-blue-900">
       <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 group">
@@ -26,8 +26,8 @@ export default function Layout() {
               <CatalystLogo className="w-10 h-10" />
             </div>
             <div className="flex flex-col">
-              <span className="font-black text-lg tracking-tight leading-none text-slate-900">Career Catalyst</span>
-              <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest mt-0.5">AI Job Copilot</span>
+              <span className="font-black text-lg tracking-tight leading-none text-slate-900">Career Compass AI</span>
+              {/* <span className="text-[10px] font-black text-blue-900 uppercase mt-0.5">AI Job Copilot</span> */}
             </div>
           </Link>
 
@@ -49,8 +49,8 @@ export default function Layout() {
               Discover
             </Link>
             <Link
-              to="/add"
-              className={`text-sm font-bold transition-colors flex items-center gap-2 ${location.pathname === '/add' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'
+              to="/addjob"
+              className={`text-sm font-bold transition-colors flex items-center gap-2 ${location.pathname === '/addjob' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'
                 }`}
             >
               <Target className="w-4 h-4" />
@@ -59,8 +59,7 @@ export default function Layout() {
           </nav>
 
           <div className="flex items-center gap-4">
-            <Link
-              to="/add"
+            <Link to="/addjob"
               className="hidden sm:flex items-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded-2xl hover:bg-slate-800 transition-all text-sm font-bold shadow-lg shadow-slate-200"
             >
               <Plus className="w-4 h-4" />
@@ -79,7 +78,7 @@ export default function Layout() {
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-2.5 opacity-50 grayscale">
             <CatalystLogo className="w-6 h-6" />
-            <span className="font-bold tracking-tight">Career Catalyst</span>
+            <span className="font-bold tracking-tight">Career Compass AI</span>
           </div>
           <p className="text-sm text-slate-400 font-medium">© 2026 AI Job Assistant. Elevate your application strategy.</p>
         </div>

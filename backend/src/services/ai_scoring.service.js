@@ -1,6 +1,6 @@
 import { generateJSON } from './llm.service.js'
 
-const SCORING_PROMPT = (jobTitle, analysis, resumeText, matchedSkills, missingSkills) => `
+const Scoring_Prompt = (jobTitle, analysis, resumeText, matchedSkills, missingSkills) => `
 You are an expert technical recruiter and ATS (Applicant Tracking System) optimizer.
 Your goal is to provide a realistic, professional evaluation of a candidate's resume against the Job Title "${jobTitle}".
 
@@ -34,9 +34,7 @@ ${resumeText}
 ---
 `
 
-/**
- * Generate a realistic AI scoring and explanation for a resume.
- */
+// Generate a realistic AI scoring and explanation for a resume
 export async function generateExplanation(jobTitle, analysis, resumeText, matchedSkills, missingSkills) {
-  return await generateJSON(SCORING_PROMPT(jobTitle, analysis, resumeText, matchedSkills, missingSkills))
+  return await generateJSON(Scoring_Prompt(jobTitle, analysis, resumeText, matchedSkills, missingSkills))
 }

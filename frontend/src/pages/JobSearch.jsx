@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { searchJobs, createJob } from '../api/jobs'
 import { Search, Building2, MapPin, Globe, Plus, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react'
+import "../styles/JobSearch.css"
 
 export default function JobSearch() {
   const navigate = useNavigate()
@@ -141,6 +142,29 @@ export default function JobSearch() {
           </div>
         </div>
 
+        <div className="rounded-xl gap-1.5 flex">
+          <select className='filters' name="jobType" id="jobType">
+            <option value="">Select Job Type</option>
+            <option value="full_time">Full Time</option>
+            <option value="part_time">Part Time</option>
+            <option value="contract">Contract</option>
+          </select>
+
+          <select className='filters' name="datePosted" id="datePosted">
+            <option value="">Select Date Posted</option>
+            <option value="last 24 hours">Last 24 hours</option>
+            <option value="last 7 days">Last 7 days</option>
+            <option value="last 14 days">Last 14 days</option>
+            <option value="last 30 days">Last 30 days</option>
+          </select>
+
+          <select className='filters' name="workMode" id="workMode" >
+            <option value="">Select Work Mode</option>
+            <option value="on-site">On-site</option>
+            <option value="remote">Remote</option>
+            <option value="hybrid">Hybrid</option>
+          </select>
+        </div>
         <button
           type="submit"
           disabled={searching || (!query.trim() && !location.trim())}

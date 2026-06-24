@@ -1,7 +1,6 @@
 import axios from 'axios'
 
-// ─── Source 1: Adzuna (India-first, best quality) ────────────────
-const ADZUNA_APP_ID  = process.env.ADZUNA_APP_ID
+const ADZUNA_APP_ID = process.env.ADZUNA_APP_ID
 const ADZUNA_APP_KEY = process.env.ADZUNA_APP_KEY
 const ADZUNA_COUNTRY = 'in' // India endpoint
 const SERPAPI_KEY = process.env.SERPAPI_KEY
@@ -14,10 +13,10 @@ async function searchAdzuna(query, location, page = 1, pageSize = 10) {
     results_per_page: pageSize,
     'content-type': 'application/json'
   }
-  if (query)    params.what  = query
+  if (query) params.what = query
   if (location) params.where = location
 
-  const { data } = await axios.get(url, { 
+  const { data } = await axios.get(url, {
     params,
     family: 4, // Force IPv4 to prevent IPv6 DNS timeout bug
     timeout: 5000 // 5 seconds timeout
@@ -43,10 +42,9 @@ async function searchAdzuna(query, location, page = 1, pageSize = 10) {
   return { results, total, page, totalPages, pageSize }
 }
 
-// ─── Source 2: Google Jobs India (via SerpAPI) ───────────────────
 async function searchGoogleJobs(query, location, page = 1) {
   if (!SERPAPI_KEY) return { results: [] }
-  
+
   const start = (page - 1) * 10
   const url = 'https://serpapi.com/search.json'
   const params = {
@@ -58,12 +56,12 @@ async function searchGoogleJobs(query, location, page = 1) {
     api_key: SERPAPI_KEY
   }
 
-  const { data } = await axios.get(url, { 
+  const { data } = await axios.get(url, {
     params,
     family: 4, // Force IPv4 to prevent IPv6 DNS timeout bug
     timeout: 5000 // 5 seconds timeout
   })
-  
+
   const results = (data.jobs_results || []).map((job, index) => ({
     id: `google_${job.job_id || index}_${Date.now()}`,
     title: job.title || 'Untitled',
@@ -82,13 +80,7 @@ async function searchGoogleJobs(query, location, page = 1) {
   return { results, total, page, totalPages, pageSize: 10 }
 }
 
-// ─── Public API (cascading sources) ──────────────────────────────
 
-/**
- * Search for jobs using a highly focused Indian market cascading strategy:
- *  1. Adzuna India (Covers physical, hybrid, and remote jobs across India)
- *  2. Google Jobs India via SerpAPI (Aggregates Naukri, Indeed India, and LinkedIn India)
- */
 export async function searchJobs(query, location, page = 1) {
   // Tier 1: Adzuna (India-first, requires API keys)
   if (ADZUNA_APP_ID && ADZUNA_APP_KEY) {

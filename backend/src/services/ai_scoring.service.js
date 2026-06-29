@@ -1,37 +1,61 @@
 import { generateJSON } from './llm.service.js'
 
 const Scoring_Prompt = (jobTitle, analysis, resumeText, matchedSkills, missingSkills) => `
-You are an expert technical recruiter and ATS (Applicant Tracking System) optimizer.
-Your goal is to provide a realistic, professional evaluation of a candidate's resume against the Job Title "${jobTitle}".
+You are a strict, calibrated technical recruiter evaluating resumes for an ATS system.
+Role being evaluated: "${jobTitle}"
 
-We have already performed a deterministic keyphrase match for the required and nice-to-have skills.
-Here is the matching status of skills:
-- Matched Skills: ${matchedSkills.join(', ') || 'None'}
-- Missing Skills: ${missingSkills.join(', ') || 'None'}
+## Pre-computed Skill Match (do NOT re-evaluate skills yourself)
+- Matched: ${matchedSkills.join(', ') || 'None'}
+- Missing:  ${missingSkills.join(', ') || 'None'}
 
-Please focus on evaluating the experience duration, seniority, and formatting quality of the candidate's resume.
+## Your Task
+Evaluate the resume on exactly 3 dimensions. Return ONLY a JSON object — no markdown, no explanation.
 
-Return a JSON object exactly matching this schema:
-{
-  "experience_fit": 0-20,
-  "profile_quality": 0-15,
-  "summary": "Professional overview (2-3 sentences).",
-  "strengths": ["string"],
-  "gaps": ["string"],
-  "recommendation": "Specific actionable advice."
-}
+## Scoring Rubric
 
-Scoring Rubric for your evaluation:
-- Experience Fit (20 pts): Seniority, years of experience required by the role, and progression in career history.
-- Profile Quality & Education (15 pts): Clarity, presence of impact-driven bullet points (using action verbs and quantifiable metrics), education relevance, and overall layout density.
+### 1. experience_fit (0-20 pts)
+Does the candidate's career history match the seniority and domain required?
+- 18-20: Direct experience with the exact role type, sufficient YOE, clear progression
+- 13-17: Related experience, minor seniority gap or domain shift
+- 7-12: Relevant field but significant experience gap or mismatch
+- 0-6:  Entry level / irrelevant background for this role
 
-Job Description Context:
-${JSON.stringify(analysis, null, 2)}
+### 2. impact_writing (0-10 pts)
+Quality of how experience is written — not what they did, but HOW they communicated it.
+- 9-10: Every bullet uses action verb + metric/outcome (e.g. "Reduced API latency by 40%")
+- 6-8:  Most bullets are strong, some lack quantification
+- 3-5:  Mix of strong and weak bullets, some generic descriptions
+- 0-2:  Mostly vague, passive, or responsibility-only bullets
 
-Resume Text:
+### 3. profile_quality (0-10 pts)
+Overall profile signal: education relevance, certifications, side projects, layout density.
+- 9-10: Strong education match + relevant certs/projects, dense and well-structured
+- 6-8:  Good education, some extras, reasonable structure
+- 3-5:  Adequate education, sparse extras
+- 0-2:  Weak education fit, no extras, poor structure
+
+## Calibration Examples
+- A fresh CS grad applying for "Junior React Developer" with React projects: experience_fit=12, impact_writing=5, profile_quality=8
+- A 5-yr backend engineer applying for "Senior Node.js Engineer" with quantified bullets: experience_fit=19, impact_writing=9, profile_quality=8
+- A 2-yr support engineer applying for "Data Engineer" with no data skills: experience_fit=4, impact_writing=4, profile_quality=5
+
+## Job Context
+${JSON.stringify({ title: jobTitle, required_skills: analysis.required_skills, nice_to_have: analysis.nice_to_have, experience_level: analysis.experience_level, responsibilities: analysis.responsibilities }, null, 2)}
+
+## Resume
 ---
 ${resumeText}
 ---
+
+## Required JSON Output Schema
+{
+  "experience_fit": <integer 0-20>,
+  "impact_writing": <integer 0-10>,
+  "profile_quality": <integer 0-10>,
+  "strengths": ["<specific strength with evidence from resume>", ...],
+  "gaps": ["<specific gap or concern>", ...],
+  "recommendation": "<single most impactful action the candidate should take>"
+}
 `
 
 // Generate a realistic AI scoring and explanation for a resume

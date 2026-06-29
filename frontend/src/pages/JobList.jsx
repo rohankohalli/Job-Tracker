@@ -7,7 +7,7 @@ import { Building2, Calendar, ChevronRight, Briefcase, Plus } from 'lucide-react
 const FilterTab = ({ value, label, filter, setFilter }) => (
   <button
     onClick={() => setFilter(value)}
-    className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${filter === value
+    className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all cursor-pointer ${filter === value
       ? 'bg-primary text-white shadow-md'
       : 'text-slate-500 hover:bg-slate-100'
       }`}

@@ -1,7 +1,7 @@
 import db from '../models/index.js'
 import { generateJSON } from './llm.service.js'
 
-const Analysis_Prompt = (jd) => `
+const Jd_Analysis_Prompt = (jd) => `
 You are a job description parser. Analyze the following job description and return a JSON object with exactly this schema:
 {
   "required_skills": ["string"],
@@ -13,9 +13,10 @@ You are a job description parser. Analyze the following job description and retu
 }
 
 Rules:
-- required_skills: hard requirements explicitly stated
-- nice_to_have: optional or preferred skills
-- experience_years: e.g. "2-4 years" or "not specified"
+- required_skills: hard requirements explicitly stated. Always emit INDIVIDUAL skill names.
+  WRONG: "Front-end frameworks (React, Angular, or Vue)"
+  RIGHT: ["React", "Angular", "Vue"]
+- nice_to_have: optional or preferred skills, same atomic rule- experience_years: e.g. "2-4 years" or "not specified"
 - red_flags: anything concerning (e.g. "unpaid", "10+ years for junior role", "no benefits mentioned")
 - Return ONLY valid JSON, no markdown, no explanation
 
@@ -26,7 +27,7 @@ ${jd}
 `
 
 export async function analyzeAndSave(jobId, description) {
-  const structured = await generateJSON(Analysis_Prompt(description))
+  const structured = await generateJSON(Jd_Analysis_Prompt(description))
 
   await db.JdAnalysis.upsert({
     jobId,

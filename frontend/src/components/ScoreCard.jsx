@@ -272,10 +272,11 @@ export default function ScoreCard({ jobId, isAnalyzed }) {
 
         {/* Multi-Factor Breakdown */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
-          <ScoreBar label="Skill Alignment" score={breakdown.skill_match || 0} max={50} color="bg-blue-500" />
-          <ScoreBar label="Job Title Relevance" score={breakdown.title_match || 0} max={15} color="bg-indigo-500" />
-          <ScoreBar label="Experience Fit" score={breakdown.experience_fit || 0} max={20} color="bg-emerald-500" />
-          <ScoreBar label="Resume Quality & Ed." score={breakdown.profile_quality || 0} max={15} color="bg-amber-400" />
+          <ScoreBar label="Skill Alignment"       score={breakdown.skill_match     || 0} max={50} color="bg-blue-500" />
+          <ScoreBar label="Job Title Relevance"   score={breakdown.title_match     || 0} max={10} color="bg-indigo-500" />
+          <ScoreBar label="Experience Fit"        score={breakdown.experience_fit  || 0} max={20} color="bg-emerald-500" />
+          <ScoreBar label="Writing Impact"        score={breakdown.impact_writing  || 0} max={10} color="bg-violet-500" />
+          <ScoreBar label="Profile & Education"  score={breakdown.profile_quality || 0} max={10} color="bg-amber-400" />
         </div>
 
         {/* Keyphrase Match Lists */}
@@ -325,16 +326,9 @@ export default function ScoreCard({ jobId, isAnalyzed }) {
             </div>
           )}
 
-        {/* Detailed Insights */}
-        {exp.summary && (
+        {/* Detailed Insights — show whenever we have any AI output */}
+        {(exp.strengths?.length > 0 || exp.gaps?.length > 0 || exp.recommendation) && (
           <div className="space-y-6 pt-6 border-t border-slate-100">
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 relative">
-              <span className="absolute -top-3 left-4 bg-white px-2 text-[10px] font-black text-slate-400 uppercase tracking-widest border rounded">Summary</span>
-              <p className="text-sm text-slate-700 leading-relaxed italic">
-                "{exp.summary}"
-              </p>
-            </div>
-
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-3">
                 <h4 className="text-xs font-black text-green-700 uppercase tracking-widest flex items-center gap-1.5">

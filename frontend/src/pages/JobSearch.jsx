@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { searchJobs, createJob } from '../api/jobs'
-import { Search, Building2, MapPin, Globe, Plus, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Search, Building2, MapPin, Globe, Plus, AlertCircle, ChevronLeft, ChevronRight, SlidersHorizontal } from 'lucide-react'
 import "../styles/JobSearch.css"
 
 export default function JobSearch() {
@@ -142,7 +142,8 @@ export default function JobSearch() {
           </div>
         </div>
 
-        <div className="rounded-xl gap-1.5 flex">
+        <div className="gap-1.5 flex items-center">
+          <SlidersHorizontal />
           <select className='filters' name="jobType" id="jobType">
             <option value="">Select Job Type</option>
             <option value="full_time">Full Time</option>

@@ -1,6 +1,6 @@
 # AI Job Assistant
 
-A human-in-the-loop job hunting assistant. Track jobs, analyze JDs with AI, score your resume, and draft outreach messages — with you approving every AI-assisted step.
+A human-in-the-loop job hunting assistant. Track jobs, analyze JDs with AI and score your resume with you approving every AI-assisted step.
 
 ## Tech Stack
 

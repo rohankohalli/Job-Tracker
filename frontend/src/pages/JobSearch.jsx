@@ -169,7 +169,7 @@ export default function JobSearch() {
         <button
           type="submit"
           disabled={searching || (!query.trim() && !location.trim())}
-          className="w-full py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-md flex justify-center items-center gap-2"
+          className="w-full py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-md flex justify-center items-center gap-2 cursor-pointer"
         >
           {searching ? (
             <>
@@ -225,7 +225,7 @@ export default function JobSearch() {
                   <button
                     onClick={() => handleTrackJob(job)}
                     disabled={trackingId === job.id}
-                    className="w-full md:w-auto px-6 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors shadow-lg flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full md:w-auto px-6 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                   >
                     {trackingId === job.id ? 'Tracking...' : (
                       <>

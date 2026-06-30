@@ -172,7 +172,7 @@ export default function JobDetail() {
           <button
             onClick={handleDelete}
             title="Delete Job"
-            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -189,7 +189,7 @@ export default function JobDetail() {
               {!isEditingDesc && (
                 <button
                   onClick={() => setIsEditingDesc(true)}
-                  className="p-1 text-slate-400 hover:text-primary transition-colors"
+                  className="p-1 text-slate-400 hover:text-primary transition-colors cursor-pointer"
                 >
                   <Pencil className="w-4 h-4" />
                 </button>
@@ -208,13 +208,13 @@ export default function JobDetail() {
                     <button
                       onClick={() => handleSave('desc')}
                       disabled={saving}
-                      className="px-4 py-2 bg-primary text-white text-sm rounded hover:bg-primary-dark flex items-center gap-2"
+                      className="px-4 py-2 bg-primary text-white text-sm rounded hover:bg-primary-dark flex items-center gap-2 cursor-pointer"
                     >
                       <Save className="w-4 h-4" /> {saving ? 'Saving...' : 'Save Description'}
                     </button>
                     <button
                       onClick={() => setIsEditingDesc(false)}
-                      className="px-4 py-2 bg-slate-100 text-slate-600 text-sm rounded hover:bg-slate-200"
+                      className="px-4 py-2 bg-slate-100 text-slate-600 text-sm rounded hover:bg-slate-200 cursor-pointer"
                     >
                       Cancel
                     </button>

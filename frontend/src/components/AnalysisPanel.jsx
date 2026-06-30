@@ -54,7 +54,7 @@ export default function AnalysisPanel({ jobId, hasDescription }) {
         <button
           onClick={handleAnalyze}
           disabled={!hasDescription || analyzing}
-          className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition-colors font-medium disabled:opacity-50 flex items-center gap-2 mx-auto"
+          className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition-colors font-medium disabled:opacity-50 flex items-center gap-2 mx-auto cursor-pointer"
         >
           {analyzing ? 'Analyzing...' : 'Analyze JD Now'}
         </button>

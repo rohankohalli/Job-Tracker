@@ -141,7 +141,9 @@ export default function AddJob() {
   return (
     <div className="max-w-3xl mx-auto pb-20">
       <div className="flex items-center gap-4 mb-8">
-        <button onClick={() => navigate(-1)} className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500 cursor-pointer">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div>
@@ -297,14 +299,14 @@ export default function AddJob() {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="px-8 py-4 text-slate-500 hover:text-slate-900 font-bold transition-colors"
+              className="px-8 py-4 text-slate-500 hover:text-slate-900 font-bold transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="bg-slate-900 text-white px-10 py-4 rounded-2xl hover:bg-slate-800 transition-all font-bold shadow-xl shadow-slate-200 flex items-center justify-center gap-2 group"
+              className="bg-slate-900 text-white px-10 py-4 rounded-2xl hover:bg-slate-800 transition-all font-bold shadow-xl shadow-slate-200 flex items-center justify-center gap-2 group cursor-pointer"
             >
               {loading ? 'Saving Opportunity...' : 'Save & Analyze'}
               <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />

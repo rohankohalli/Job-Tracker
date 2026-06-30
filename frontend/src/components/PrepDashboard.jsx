@@ -82,7 +82,7 @@ export default function PrepDashboard({ jobId, isScored }) {
         {isScored && prep?.interview_prep && (
           <button
             onClick={() => setShowFullPrep(true)}
-            className="text-xs font-bold text-primary hover:underline flex items-center gap-1 uppercase tracking-wider"
+            className="text-xs font-bold text-primary hover:underline flex items-center gap-1 uppercase tracking-wider cursor-pointer"
           >
             <Maximize2 className="w-3 h-3" /> Full Screen View
           </button>
@@ -108,7 +108,7 @@ export default function PrepDashboard({ jobId, isScored }) {
                 <button
                   onClick={handleGenPrep}
                   disabled={generatingPrep}
-                  className="bg-blue-600 text-white px-4 py-1.5 text-xs rounded-lg hover:bg-blue-700 disabled:opacity-50 font-bold transition-all"
+                  className="bg-blue-600 text-white px-4 py-1.5 text-xs rounded-lg hover:bg-blue-700 disabled:opacity-50 font-bold transition-all cursor-pointer"
                 >
                   {generatingPrep ? 'Predicting...' : 'Generate Questions'}
                 </button>
@@ -156,7 +156,7 @@ export default function PrepDashboard({ jobId, isScored }) {
               {prep?.resume_tailor ? (
                 <button
                   onClick={() => setShowFullTailor(true)}
-                  className="bg-emerald-600 text-white px-4 py-1.5 text-xs rounded-lg hover:bg-emerald-700 font-bold transition-all flex items-center gap-1"
+                  className="bg-emerald-600 text-white px-4 py-1.5 text-xs rounded-lg hover:bg-emerald-700 font-bold transition-all flex items-center gap-1 cursor-pointer"
                 >
                   <Maximize2 className="w-3.5 h-3.5" /> Workspace
                 </button>
@@ -164,7 +164,7 @@ export default function PrepDashboard({ jobId, isScored }) {
                 <button
                   onClick={handleGenTailor}
                   disabled={generatingTailor}
-                  className="bg-emerald-600 text-white px-4 py-1.5 text-xs rounded-lg hover:bg-emerald-700 disabled:opacity-50 font-bold transition-all"
+                  className="bg-emerald-600 text-white px-4 py-1.5 text-xs rounded-lg hover:bg-emerald-700 disabled:opacity-50 font-bold transition-all cursor-pointer"
                 >
                   {generatingTailor ? 'Analyzing...' : 'Suggest Tweaks'}
                 </button>
@@ -215,7 +215,7 @@ export default function PrepDashboard({ jobId, isScored }) {
               </div>
               <button
                 onClick={() => setShowFullPrep(false)}
-                className="p-2 hover:bg-slate-200 rounded-full transition-colors"
+                className="p-2 hover:bg-slate-200 rounded-full transition-colors cursor-pointer"
               >
                 <X className="w-6 h-6 text-slate-500" />
               </button>
@@ -279,7 +279,7 @@ export default function PrepDashboard({ jobId, isScored }) {
               </div>
               <button
                 onClick={() => setShowFullTailor(false)}
-                className="p-2 hover:bg-slate-200 rounded-full transition-colors"
+                className="p-2 hover:bg-slate-200 rounded-full transition-colors cursor-pointer"
               >
                 <X className="w-6 h-6 text-slate-500" />
               </button>

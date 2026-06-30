@@ -218,7 +218,7 @@ export default function ScoreCard({ jobId, isAnalyzed }) {
           <button
             type="submit"
             disabled={!isAnalyzed || scoring || uploading || !text.trim()}
-            className="w-full bg-primary text-white py-2.5 rounded-md hover:bg-primary-dark transition-all font-semibold shadow-sm disabled:opacity-50"
+            className="w-full bg-primary text-white py-2.5 rounded-md hover:bg-primary-dark transition-all font-semibold shadow-sm disabled:opacity-50 cursor-pointer"
           >
             {scoring ? 'AI Analyzing Context...' : 'Analyze My Resume'}
           </button>
@@ -254,7 +254,7 @@ export default function ScoreCard({ jobId, isAnalyzed }) {
           <button
             onClick={handleRescore}
             disabled={scoring}
-            className="text-[10px] text-primary hover:underline flex items-center gap-1 disabled:opacity-50 font-bold uppercase tracking-wider mt-0.5"
+            className="text-[10px] text-primary hover:underline flex items-center gap-1 disabled:opacity-50 font-bold uppercase tracking-wider mt-0.5 cursor-pointer"
           >
             <RefreshCw className={`w-2.5 h-2.5 ${scoring ? 'animate-spin' : ''}`} />
             {scoring ? 'Recalculating...' : 'Refresh'}
@@ -272,11 +272,11 @@ export default function ScoreCard({ jobId, isAnalyzed }) {
 
         {/* Multi-Factor Breakdown */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
-          <ScoreBar label="Skill Alignment"       score={breakdown.skill_match     || 0} max={50} color="bg-blue-500" />
-          <ScoreBar label="Job Title Relevance"   score={breakdown.title_match     || 0} max={10} color="bg-indigo-500" />
-          <ScoreBar label="Experience Fit"        score={breakdown.experience_fit  || 0} max={20} color="bg-emerald-500" />
-          <ScoreBar label="Writing Impact"        score={breakdown.impact_writing  || 0} max={10} color="bg-violet-500" />
-          <ScoreBar label="Profile & Education"  score={breakdown.profile_quality || 0} max={10} color="bg-amber-400" />
+          <ScoreBar label="Skill Alignment" score={breakdown.skill_match || 0} max={50} color="bg-blue-500" />
+          <ScoreBar label="Job Title Relevance" score={breakdown.title_match || 0} max={10} color="bg-indigo-500" />
+          <ScoreBar label="Experience Fit" score={breakdown.experience_fit || 0} max={20} color="bg-emerald-500" />
+          <ScoreBar label="Writing Impact" score={breakdown.impact_writing || 0} max={10} color="bg-violet-500" />
+          <ScoreBar label="Profile & Education" score={breakdown.profile_quality || 0} max={10} color="bg-amber-400" />
         </div>
 
         {/* Keyphrase Match Lists */}

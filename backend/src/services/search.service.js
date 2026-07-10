@@ -5,6 +5,29 @@ const ADZUNA_APP_KEY = process.env.ADZUNA_APP_KEY
 const ADZUNA_COUNTRY = 'in' // India endpoint
 const SERPAPI_KEY = process.env.SERPAPI_KEY
 
+const Serpapi_Job_Type = {
+  full_time: 'FULLTIME',
+  part_time: 'PARTTIME',
+  contract: 'CONTRACTOR'
+}
+
+const Serpapi_Date = {
+  'last 24 hours': 'today',
+  'last 7 days': 'week',
+  'last 30 days': 'month'
+}
+
+const JobType_Adzuna = {
+  full_time: 'full_time',
+  part_time: 'part_time',
+  contract: 'contract',
+}
+
+const DatePosted_Adzuna = {
+  'last 24 hours': 1,
+  'last 7 days': 7,
+  'last 30 days': 30
+}
 async function searchAdzuna(query, location, page = 1, pageSize = 10) {
   const url = `https://api.adzuna.com/v1/api/jobs/${ADZUNA_COUNTRY}/search/${page}`
   const params = {
@@ -19,7 +42,7 @@ async function searchAdzuna(query, location, page = 1, pageSize = 10) {
   const { data } = await axios.get(url, {
     params,
     family: 4, // Force IPv4 to prevent IPv6 DNS timeout bug
-    timeout: 5000 // 5 seconds timeout
+    timeout: 5000
   })
 
   const results = (data.results || []).map(job => ({
@@ -81,7 +104,18 @@ async function searchGoogleJobs(query, location, page = 1) {
 }
 
 
-export async function searchJobs(query, location, page = 1) {
+export async function searchJobs(query, location, page = 1, filters = {}) {
+  const { jobType, datePosted, workMode } = filters
+  // Tier 2: Google Jobs India via SerpAPI (Excellent for local Indian physical/hybrid/remote)
+  if (SERPAPI_KEY) {
+    try {
+      const result = await searchGoogleJobs(query, location, page)
+      if (result.results.length > 0) return result
+    } catch (err) {
+      console.error('Google Jobs India failed:', err)
+    }
+  }
+
   // Tier 1: Adzuna (India-first, requires API keys)
   if (ADZUNA_APP_ID && ADZUNA_APP_KEY) {
     try {
@@ -92,15 +126,6 @@ export async function searchJobs(query, location, page = 1) {
     }
   }
 
-  // Tier 2: Google Jobs India via SerpAPI (Excellent for local Indian physical/hybrid/remote)
-  if (SERPAPI_KEY) {
-    try {
-      const result = await searchGoogleJobs(query, location, page)
-      if (result.results.length > 0) return result
-    } catch (err) {
-      console.error('Google Jobs India failed:', err)
-    }
-  }
 
   throw new Error('All search sources failed or are unconfigured. Please check your Adzuna or SerpAPI environment keys.')
 }

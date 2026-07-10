@@ -4,6 +4,13 @@ import { searchJobs, createJob } from '../api/jobs'
 import { Search, Building2, MapPin, Globe, Plus, AlertCircle, ChevronLeft, ChevronRight, SlidersHorizontal } from 'lucide-react'
 import "../styles/JobSearch.css"
 
+const INITIAL_FILTERS = {
+  jobType: '',
+  datePosted: '',
+  workMode: '',
+  experience: '',
+}
+
 export default function JobSearch() {
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
@@ -13,6 +20,7 @@ export default function JobSearch() {
   const [hasSearched, setHasSearched] = useState(false)
   const [error, setError] = useState(null)
   const [trackingId, setTrackingId] = useState(null)
+  const [filters, setFilters] = useState(INITIAL_FILTERS)
 
   // Pagination state
   const [page, setPage] = useState(1)
@@ -22,6 +30,12 @@ export default function JobSearch() {
   // Committed search params (so pagination uses same query)
   const [committedQuery, setCommittedQuery] = useState('')
   const [committedLocation, setCommittedLocation] = useState('')
+  const [committedFilters, setCommittedFilters] = useState(INITIAL_FILTERS)
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target
+    setFilters(prev => ({ ...prev, [name]: value }))
+  }
 
   const doSearch = async (q, loc, p) => {
     setSearching(true)
@@ -144,27 +158,38 @@ export default function JobSearch() {
 
         <div className="gap-1.5 flex items-center">
           <SlidersHorizontal />
-          <select className='filters' name="jobType" id="jobType">
+          <select className='filters' name="jobType" id="jobType" value={filters.experience}
+            onChange={handleFilterChange}>
             <option value="">Select Job Type</option>
             <option value="full_time">Full Time</option>
             <option value="part_time">Part Time</option>
             <option value="contract">Contract</option>
           </select>
 
-          <select className='filters' name="datePosted" id="datePosted">
+          <select className='filters' name="datePosted" id="datePosted" value={filters.experience}
+            onChange={handleFilterChange}>
             <option value="">Select Date Posted</option>
             <option value="last 24 hours">Last 24 hours</option>
             <option value="last 7 days">Last 7 days</option>
-            <option value="last 14 days">Last 14 days</option>
             <option value="last 30 days">Last 30 days</option>
           </select>
 
-          <select className='filters' name="workMode" id="workMode" >
+          <select className='filters' name="workMode" id="workMode" value={filters.experience}
+            onChange={handleFilterChange}>
             <option value="">Select Work Mode</option>
             <option value="on-site">On-site</option>
             <option value="remote">Remote</option>
             <option value="hybrid">Hybrid</option>
           </select>
+
+          <select className='filters' name="experience" id="experience" value={filters.experience}
+            onChange={handleFilterChange}>
+            <option value="">Experience</option>
+            <option value="entry level">Entry Level</option>
+            <option value="mid level">Mid Level</option>
+            <option value="senior">Senior</option>
+          </select>
+
         </div>
         <button
           type="submit"

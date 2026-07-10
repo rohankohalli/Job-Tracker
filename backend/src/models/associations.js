@@ -1,5 +1,5 @@
 export function setupAssociations(models) {
-  const { Job, JdAnalysis, Resume, PrepMaterial, Message } = models
+  const { Job, JdAnalysis, Resume, PrepMaterial } = models
 
   // Job <-> JdAnalysis (One-to-One)
   Job.hasOne(JdAnalysis, { foreignKey: 'job_id', as: 'jdAnalysis', onDelete: 'CASCADE' })

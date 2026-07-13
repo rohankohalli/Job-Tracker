@@ -37,12 +37,12 @@ export default function JobSearch() {
     setFilters(prev => ({ ...prev, [name]: value }))
   }
 
-  const doSearch = async (q, loc, p) => {
+  const doSearch = async (q, loc, p, searchFilters = {}) => {
     setSearching(true)
     setError(null)
     setResults([])
     try {
-      const data = await searchJobs(q, loc, p)
+      const data = await searchJobs(q, loc, p, searchFilters)
       setResults(data.results)
       setTotalPages(data.totalPages || 1)
       setTotal(data.total || 0)
@@ -61,12 +61,13 @@ export default function JobSearch() {
     setPage(1)
     setCommittedQuery(query)
     setCommittedLocation(location)
-    doSearch(query, location, 1)
+    setCommittedFilters(filters)
+    doSearch(query, location, 1, filters)
   }
 
   const handlePageChange = (newPage) => {
     if (newPage < 1 || newPage > totalPages) return
-    doSearch(committedQuery, committedLocation, newPage)
+    doSearch(committedQuery, committedLocation, newPage, committedFilters)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -158,7 +159,7 @@ export default function JobSearch() {
 
         <div className="gap-1.5 flex items-center">
           <SlidersHorizontal />
-          <select className='filters' name="jobType" id="jobType" value={filters.experience}
+          <select className='filters' name="jobType" id="jobType" value={filters.jobType}
             onChange={handleFilterChange}>
             <option value="">Select Job Type</option>
             <option value="full_time">Full Time</option>
@@ -166,15 +167,15 @@ export default function JobSearch() {
             <option value="contract">Contract</option>
           </select>
 
-          <select className='filters' name="datePosted" id="datePosted" value={filters.experience}
+          <select className='filters' name="datePosted" id="datePosted" value={filters.datePosted}
             onChange={handleFilterChange}>
             <option value="">Select Date Posted</option>
-            <option value="last 24 hours">Last 24 hours</option>
-            <option value="last 7 days">Last 7 days</option>
-            <option value="last 30 days">Last 30 days</option>
+            <option value="since yesterday">Last 24 hours</option>
+            <option value="last week">Last 7 days</option>
+            <option value="last month">Last 30 days</option>
           </select>
 
-          <select className='filters' name="workMode" id="workMode" value={filters.experience}
+          <select className='filters' name="workMode" id="workMode" value={filters.workMode}
             onChange={handleFilterChange}>
             <option value="">Select Work Mode</option>
             <option value="on-site">On-site</option>

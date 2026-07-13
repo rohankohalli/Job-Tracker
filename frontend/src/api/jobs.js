@@ -40,10 +40,14 @@ export const parseJD = async (description) => {
   return response.data
 }
 
-export const searchJobs = async (query, location = '', page = 1) => {
+export const searchJobs = async (query, location = '', page = 1, filters = {}) => {
   const params = { page }
   if (query) params.q = query
   if (location) params.location = location
+  if (filters.jobType) params.jobType = filters.jobType
+  if (filters.datePosted) params.datePosted = filters.datePosted
+  if (filters.workMode) params.workMode = filters.workMode
+  if (filters.experience) params.experience = filters.experience
   const response = await apiClient.get('/search', { params })
   return response.data
 }

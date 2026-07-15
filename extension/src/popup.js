@@ -2,6 +2,8 @@ const API_URL = 'http://localhost:8000/api';
 
 const btnExtract = document.getElementById('btn-extract');
 const spinnerExtract = document.getElementById('spinner-extract');
+const btnClaude = document.getElementById('btn-claude');
+const spinnerClaude = document.getElementById('spinner-claude');
 const editForm = document.getElementById('edit-form');
 const captureSection = document.getElementById('capture-section');
 
@@ -144,3 +146,45 @@ function resetForm() {
   captureSection.style.display = 'block';
   hideAlerts();
 }
+
+btnClaude.addEventListener('click', async () => {
+  btnClaude.disabled = true;
+  spinnerClaude.style.display = 'inline-block';
+  hideAlerts();
+
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab) throw new Error('No active browser tab found.');
+
+    const [{ result }] = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: () => document.body.innerText,
+    });
+
+    if (!result || !result.trim()) {
+      throw new Error('Could not extract text content from the active tab.');
+    }
+
+    const prompt = `I am looking at this job posting. Please extract the Job Title, Company, and analyze the key requirements. Is this a good role?\n\nJob Details:\n${result.slice(0, 15000)}`;
+
+    // Fallback clipboard logic for extensions
+    const textarea = document.createElement('textarea');
+    textarea.value = prompt;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+
+    showAlert(alertSuccess, 'Prompt copied! Opening Claude. Paste (Ctrl+V) when it opens.');
+
+    setTimeout(() => {
+      chrome.tabs.create({ url: 'https://claude.ai/new' });
+    }, 1500);
+
+  } catch (err) {
+    showAlert(alertError, err.message);
+  } finally {
+    btnClaude.disabled = false;
+    spinnerClaude.style.display = 'none';
+  }
+});

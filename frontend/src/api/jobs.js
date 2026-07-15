@@ -40,10 +40,11 @@ export const parseJD = async (description) => {
   return response.data
 }
 
-export const searchJobs = async (query, location = '', page = 1, filters = {}) => {
+export const searchJobs = async (query, location = '', page = 1, nextPageToken = '', filters = {}) => {
   const params = { page }
   if (query) params.q = query
   if (location) params.location = location
+  if (nextPageToken) params.next_page_token = nextPageToken
   if (filters.jobType) params.jobType = filters.jobType
   if (filters.datePosted) params.datePosted = filters.datePosted
   if (filters.workMode) params.workMode = filters.workMode

@@ -29,10 +29,9 @@ const DatePosted_Adzuna = {
   'last 30 days': 30
 }
 
-async function searchGoogleJobs(query, location, page = 1, filters = {}) {
+async function searchGoogleJobs(query, location, page = 1, nextPageToken = '', filters = {}) {
   if (!SERPAPI_KEY) return { results: [] }
 
-  const start = (page - 1) * 10
   const queryParts = [query, location ? `in ${location}` : '']
   if (filters.jobType) queryParts.push(filters.jobType.replace('_', ' '))
   if (filters.datePosted) queryParts.push(filters.datePosted)
@@ -45,8 +44,12 @@ async function searchGoogleJobs(query, location, page = 1, filters = {}) {
     q: queryParts.filter(Boolean).join(' ').trim(),
     hl: 'en',
     gl: 'in', // Geotarget India
-    start,
     api_key: SERPAPI_KEY
+  }
+
+  // Use token if available since Google Jobs pagination ignores start offset
+  if (nextPageToken) {
+    params.next_page_token = nextPageToken
   }
 
   const { data } = await axios.get(url, {
@@ -67,13 +70,21 @@ async function searchGoogleJobs(query, location, page = 1, filters = {}) {
     published: job.detected_extensions?.posted_at || 'Recently'
   }))
 
-  // SerpAPI doesn't give a true total count. Infer "is there a next page"
-  // from serpapi_pagination.next if present, otherwise from a full page of results.
-  const hasNextPage = Boolean(data.serpapi_pagination?.next) || results.length === 10
-  const totalPages = hasNextPage ? page + 1 : page // "+1" is a placeholder upper bound, not a real count
+  const nextToken = data.serpapi_pagination?.next_page_token || ''
+  const hasNextPage = Boolean(nextToken) && results.length === 10
+  
+  const totalPages = hasNextPage ? page + 1 : page
   const total = hasNextPage ? page * 10 + 1 : (page - 1) * 10 + results.length
 
-  return { results, total, page, totalPages, pageSize: 10 }
+  return { 
+    results, 
+    total, 
+    page, 
+    totalPages, 
+    pageSize: 10, 
+    isEstimated: true,
+    next_page_token: nextToken 
+  }
 }
 
 async function searchAdzuna(query, location, page = 1, filters = {}, pageSize = 10) {
@@ -116,21 +127,22 @@ async function searchAdzuna(query, location, page = 1, filters = {}, pageSize = 
   const total = data.count || results.length
   const totalPages = Math.ceil(total / pageSize)
 
-  return { results, total, page, totalPages, pageSize }
+  return { results, total, page, totalPages, pageSize, isEstimated: false }
 }
 
 
-export async function searchJobs(query, location, page = 1, filters = {}) {
-  const { jobType, datePosted, workMode } = filters
+export async function searchJobs(query, location, page = 1, nextPageToken = '', filters = {}) {
+  // Tier 1: Google Jobs India via SerpAPI
   if (SERPAPI_KEY) {
     try {
-      const result = await searchGoogleJobs(query, location, page, filters)
+      const result = await searchGoogleJobs(query, location, page, nextPageToken, filters)
       if (result.results.length > 0) return result
     } catch (err) {
       console.error('Google Jobs India failed:', err)
     }
   }
 
+  // Tier 2: Adzuna (India-first, requires API keys)
   if (ADZUNA_APP_ID && ADZUNA_APP_KEY) {
     try {
       const result = await searchAdzuna(query, location, page, filters)

@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect, useMemo } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { searchJobs, createJob } from '../api/jobs'
 import { Search, Building2, MapPin, Globe, Plus, AlertCircle, ChevronLeft, ChevronRight, SlidersHorizontal } from 'lucide-react'
 import "../styles/JobSearch.css"
@@ -13,40 +13,57 @@ const INITIAL_FILTERS = {
 
 export default function JobSearch() {
   const navigate = useNavigate()
-  const [query, setQuery] = useState('')
-  const [location, setLocation] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  // Extract search params from URL
+  const queryParam = searchParams.get('q') || ''
+  const locationParam = searchParams.get('location') || ''
+  const page = Number(searchParams.get('page')) || 1
+
+  // Extract filters from URL memoized to prevent infinite loops
+  const filterParams = useMemo(() => ({
+    jobType: searchParams.get('jobType') || '',
+    datePosted: searchParams.get('datePosted') || '',
+    workMode: searchParams.get('workMode') || '',
+    experience: searchParams.get('experience') || '',
+  }), [searchParams])
+
+  // Local inputs states (for what user is typing/selecting, before they press Search)
+  const [query, setQuery] = useState(queryParam)
+  const [location, setLocation] = useState(locationParam)
+  const [filters, setFilters] = useState(filterParams)
+
+  // Search results and meta states
   const [results, setResults] = useState([])
   const [searching, setSearching] = useState(false)
   const [hasSearched, setHasSearched] = useState(false)
   const [error, setError] = useState(null)
   const [trackingId, setTrackingId] = useState(null)
-  const [filters, setFilters] = useState(INITIAL_FILTERS)
-
-  // Pagination state
-  const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [total, setTotal] = useState(0)
+  const [isEstimated, setIsEstimated] = useState(false)
+  const [currentNextPageToken, setCurrentNextPageToken] = useState('')
 
-  // Committed search params (so pagination uses same query)
-  const [committedQuery, setCommittedQuery] = useState('')
-  const [committedLocation, setCommittedLocation] = useState('')
-  const [committedFilters, setCommittedFilters] = useState(INITIAL_FILTERS)
+  // Sync inputs back if searchParams change externally (e.g. back/forward button)
+  useEffect(() => {
+    setQuery(queryParam)
+    setLocation(locationParam)
+    setFilters(filterParams)
+  }, [queryParam, locationParam, filterParams])
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target
-    setFilters(prev => ({ ...prev, [name]: value }))
-  }
-
+  // Core search fetch function
   const doSearch = async (q, loc, p, searchFilters = {}) => {
     setSearching(true)
     setError(null)
     setResults([])
     try {
-      const data = await searchJobs(q, loc, p, searchFilters)
+      const token = searchParams.get('next_page_token') || ''
+      const data = await searchJobs(q, loc, p, token, searchFilters)
       setResults(data.results)
       setTotalPages(data.totalPages || 1)
       setTotal(data.total || 0)
-      setPage(data.page || p)
+      setIsEstimated(Boolean(data.isEstimated))
+      setCurrentNextPageToken(data.next_page_token || '')
     } catch (err) {
       setError(err.message)
     } finally {
@@ -54,20 +71,62 @@ export default function JobSearch() {
     }
   }
 
-  const handleSearch = async (e) => {
+  // Trigger search when URL query params change (including page tokens)
+  useEffect(() => {
+    if (queryParam.trim() || locationParam.trim()) {
+      setHasSearched(true)
+      doSearch(queryParam, locationParam, page, filterParams)
+    } else {
+      setHasSearched(false)
+      setResults([])
+    }
+  }, [queryParam, locationParam, page, filterParams, searchParams.get('next_page_token')])
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target
+    setFilters(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleSearch = (e) => {
     e.preventDefault()
     if (!query.trim() && !location.trim()) return
-    setHasSearched(true)
-    setPage(1)
-    setCommittedQuery(query)
-    setCommittedLocation(location)
-    setCommittedFilters(filters)
-    doSearch(query, location, 1, filters)
+
+    const nextParams = {
+      q: query.trim(),
+      location: location.trim(),
+      page: '1',
+    }
+
+    // Include filters in URL if set
+    Object.entries(filters).forEach(([key, val]) => {
+      if (val) nextParams[key] = val
+    })
+
+    setSearchParams(nextParams)
   }
 
   const handlePageChange = (newPage) => {
     if (newPage < 1 || newPage > totalPages) return
-    doSearch(committedQuery, committedLocation, newPage, committedFilters)
+
+    const nextParams = {
+      q: queryParam,
+      location: locationParam,
+      page: String(newPage),
+    }
+
+    Object.entries(filterParams).forEach(([key, val]) => {
+      if (val) nextParams[key] = val
+    })
+
+    // Forward the token if going to page > current page
+    if (newPage > page && currentNextPageToken) {
+      nextParams.next_page_token = currentNextPageToken
+    } else if (newPage === 1) {
+      // Clear token when going to page 1
+      delete nextParams.next_page_token
+    }
+
+    setSearchParams(nextParams)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -138,6 +197,7 @@ export default function JobSearch() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              autoComplete='on'
               placeholder="Job Title or Keyword (e.g. React)"
               className="block w-full pl-14 pr-4 py-4 text-base border-2 border-slate-200 rounded-2xl bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all shadow-sm font-medium"
             />
@@ -151,6 +211,7 @@ export default function JobSearch() {
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
+              autoComplete='on'
               placeholder="Location (e.g. Bangalore, Pune)"
               className="block w-full pl-14 pr-4 py-4 text-base border-2 border-slate-200 rounded-2xl bg-white focus:outline-none focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all shadow-sm font-medium"
             />
@@ -216,11 +277,13 @@ export default function JobSearch() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-slate-700">
-              {total} result{total !== 1 ? 's' : ''} found
-              {committedQuery && <span className="text-blue-500 ml-1">for "{committedQuery}"</span>}
-              {committedLocation && <span className="text-emerald-500 ml-1">in {committedLocation}</span>}
+              {isEstimated ? `${total - 1}+` : total} result{total !== 1 ? 's' : ''} found
+              {queryParam && <span className="text-blue-500 ml-1">for "{queryParam}"</span>}
+              {locationParam && <span className="text-emerald-500 ml-1">in {locationParam}</span>}
             </h3>
-            <span className="text-sm text-slate-400 font-medium">Page {page} of {totalPages}</span>
+            <span className="text-sm text-slate-400 font-medium">
+              Page {page} of {totalPages}{isEstimated ? '+' : ''}
+            </span>
           </div>
 
           <div className="grid gap-4">
@@ -286,35 +349,41 @@ export default function JobSearch() {
                 <ChevronLeft className="w-4 h-4" /> <span className="hidden md:inline">Prev</span>
               </button>
 
-              {/* Desktop page numbers */}
-              <div className="hidden md:flex items-center gap-2 flex-wrap justify-center">
-                {getPageNumbers().map((p, index) => {
-                  if (p === '...') {
+              {/* Desktop page numbers or estimation label */}
+              {!isEstimated ? (
+                <div className="hidden md:flex items-center gap-2 flex-wrap justify-center">
+                  {getPageNumbers().map((p, index) => {
+                    if (p === '...') {
+                      return (
+                        <span key={`ellipsis-${index}`} className="px-2 text-slate-400 font-bold select-none">
+                          ...
+                        </span>
+                      )
+                    }
                     return (
-                      <span key={`ellipsis-${index}`} className="px-2 text-slate-400 font-bold select-none">
-                        ...
-                      </span>
+                      <button
+                        key={p}
+                        onClick={() => handlePageChange(p)}
+                        disabled={searching}
+                        className={`w-9 h-9 rounded-xl font-bold text-sm transition-all disabled:cursor-not-allowed cursor-pointer ${p === page
+                          ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
+                          : 'border border-slate-200 text-slate-500 hover:border-blue-300 hover:text-blue-600 bg-white hover:bg-slate-50'
+                          }`}
+                      >
+                        {p}
+                      </button>
                     )
-                  }
-                  return (
-                    <button
-                      key={p}
-                      onClick={() => handlePageChange(p)}
-                      disabled={searching}
-                      className={`w-9 h-9 rounded-xl font-bold text-sm transition-all disabled:cursor-not-allowed cursor-pointer ${p === page
-                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
-                        : 'border border-slate-200 text-slate-500 hover:border-blue-300 hover:text-blue-600 bg-white hover:bg-slate-50'
-                        }`}
-                    >
-                      {p}
-                    </button>
-                  )
-                })}
-              </div>
+                  })}
+                </div>
+              ) : (
+                <span className="hidden md:inline text-sm font-bold text-slate-500 select-none">
+                  Page {page}
+                </span>
+              )}
 
               {/* Mobile page indicator */}
               <span className="md:hidden text-sm font-bold text-slate-500 select-none">
-                Page {page} of {totalPages}
+                Page {page}
               </span>
 
               <button

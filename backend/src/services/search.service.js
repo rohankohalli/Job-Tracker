@@ -1,4 +1,7 @@
 import axios from 'axios'
+import crypto from 'crypto'
+import db from '../models/index.js'
+import { Op } from 'sequelize'
 
 const ADZUNA_APP_ID = process.env.ADZUNA_APP_ID
 const ADZUNA_APP_KEY = process.env.ADZUNA_APP_KEY
@@ -41,7 +44,7 @@ async function searchGoogleJobs(query, location, page = 1, nextPageToken = '', f
   const url = 'https://serpapi.com/search.json'
   const params = {
     engine: 'google_jobs',
-    q: queryParts.filter(Boolean).join(' ').trim(),
+    q: queryParts.filter(Boolean).join(' ').trim().toLowerCase(),
     hl: 'en',
     gl: 'in', // Geotarget India
     api_key: SERPAPI_KEY
@@ -52,11 +55,55 @@ async function searchGoogleJobs(query, location, page = 1, nextPageToken = '', f
     params.next_page_token = nextPageToken
   }
 
-  const { data } = await axios.get(url, {
-    params,
-    family: 4, // Force IPv4 to prevent IPv6 DNS timeout bug
-    timeout: 5000 // 5 seconds timeout
-  })
+  // Create deterministic cache key
+  const cacheKeyString = JSON.stringify(params)
+  const cacheKey = crypto.createHash('sha256').update(cacheKeyString).digest('hex')
+
+  // Check cache for existing data < 7 days old
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+  let data;
+  try {
+    const cachedResult = await db.SearchCache.findOne({
+      where: {
+        cache_key: cacheKey,
+        created_at: { [Op.gt]: sevenDaysAgo }
+      }
+    })
+
+    if (cachedResult) {
+      console.log("🔥 CACHE HIT: " + cacheKey)
+      data = typeof cachedResult.response_data === 'string' 
+        ? JSON.parse(cachedResult.response_data) 
+        : cachedResult.response_data
+    }
+  } catch (error) {
+    console.error("Cache read error:", error.message)
+  }
+
+  if (!data) {
+    console.log("API HIT: " + cacheKey)
+    const response = await axios.get(url, {
+      params,
+      family: 4, // Force IPv4 to prevent IPv6 DNS timeout bug
+      timeout: 5000 // 5 seconds timeout
+    })
+    data = response.data
+
+    // Save to Cache (Fire and forget)
+    db.SearchCache.upsert({
+      cache_key: cacheKey,
+      provider: 'serpapi',
+      search_params: params,
+      response_data: data
+    }).catch(err => console.error("Cache write error:", err.message))
+
+    // Garbage Collection: Delete old caches (Fire and forget)
+    db.SearchCache.destroy({
+      where: {
+        created_at: { [Op.lte]: sevenDaysAgo }
+      }
+    }).catch(err => console.error("Cache cleanup error:", err.message))
+  }
 
   const results = (data.jobs_results || []).map((job, index) => ({
     id: `google_${job.job_id || index}_${Date.now()}`,
@@ -72,18 +119,18 @@ async function searchGoogleJobs(query, location, page = 1, nextPageToken = '', f
 
   const nextToken = data.serpapi_pagination?.next_page_token || ''
   const hasNextPage = Boolean(nextToken) && results.length === 10
-  
+
   const totalPages = hasNextPage ? page + 1 : page
   const total = hasNextPage ? page * 10 + 1 : (page - 1) * 10 + results.length
 
-  return { 
-    results, 
-    total, 
-    page, 
-    totalPages, 
-    pageSize: 10, 
+  return {
+    results,
+    total,
+    page,
+    totalPages,
+    pageSize: 10,
     isEstimated: true,
-    next_page_token: nextToken 
+    next_page_token: nextToken
   }
 }
 
@@ -132,25 +179,35 @@ async function searchAdzuna(query, location, page = 1, filters = {}, pageSize = 
 
 
 export async function searchJobs(query, location, page = 1, nextPageToken = '', filters = {}) {
+  const errors = []
+
   // Tier 1: Google Jobs India via SerpAPI
   if (SERPAPI_KEY) {
     try {
-      const result = await searchGoogleJobs(query, location, page, nextPageToken, filters)
-      if (result.results.length > 0) return result
+      // Return immediately on success, even if it found 0 jobs.
+      return await searchGoogleJobs(query, location, page, nextPageToken, filters)
     } catch (err) {
       console.error('Google Jobs India failed:', err)
+      errors.push(`SerpAPI: ${err.message}`)
     }
   }
 
   // Tier 2: Adzuna (India-first, requires API keys)
   if (ADZUNA_APP_ID && ADZUNA_APP_KEY) {
     try {
-      const result = await searchAdzuna(query, location, page, filters)
-      if (result.results.length > 0) return result
+      // Fallback only if SerpAPI threw a network/auth error.
+      return await searchAdzuna(query, location, page, filters)
     } catch (err) {
       console.error('Adzuna failed:', err)
+      errors.push(`Adzuna: ${err.message}`)
     }
   }
 
-  throw new Error('All search sources failed or are unconfigured. Please check your Adzuna or SerpAPI environment keys.')
+  // If we had keys but they threw errors, report the exact errors.
+  if (errors.length > 0) {
+    throw new Error(`Search providers failed - ${errors.join(' | ')}`)
+  }
+
+  // If we get here, no API keys were configured at all.
+  throw new Error('No search providers configured. Please add SERPAPI_KEY or ADZUNA_APP_KEY to your .env file.')
 }

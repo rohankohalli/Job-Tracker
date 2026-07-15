@@ -43,6 +43,14 @@ export default function JobSearch() {
   const [total, setTotal] = useState(0)
   const [isEstimated, setIsEstimated] = useState(false)
   const [currentNextPageToken, setCurrentNextPageToken] = useState('')
+  const [recentSearches, setRecentSearches] = useState(() => {
+    try {
+      const saved = localStorage.getItem('search_history')
+      return saved ? JSON.parse(saved) : []
+    } catch (e) {
+      return []
+    }
+  })
 
   // Sync inputs back if searchParams change externally (e.g. back/forward button)
   useEffect(() => {
@@ -90,6 +98,19 @@ export default function JobSearch() {
   const handleSearch = (e) => {
     e.preventDefault()
     if (!query.trim() && !location.trim()) return
+
+    const newSearch = { q: query.trim(), location: location.trim(), filters }
+    setRecentSearches(prev => {
+      const existingIndex = prev.findIndex(item => item.q === newSearch.q && item.location === newSearch.location)
+      let updatedSearch = { ...newSearch, count: 1 }
+      if (existingIndex >= 0) {
+        updatedSearch = { ...prev[existingIndex], count: (prev[existingIndex].count || 1) + 1 }
+      }
+      const filtered = prev.filter(item => !(item.q === newSearch.q && item.location === newSearch.location))
+      const updated = [updatedSearch, ...filtered].slice(0, 45)
+      localStorage.setItem('search_history', JSON.stringify(updated))
+      return updated
+    })
 
     const nextParams = {
       q: query.trim(),
@@ -195,6 +216,7 @@ export default function JobSearch() {
             </div>
             <input
               type="text"
+              name='q'
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               autoComplete='on'
@@ -209,6 +231,7 @@ export default function JobSearch() {
             </div>
             <input
               type="text"
+              name='l'
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               autoComplete='on'
@@ -246,7 +269,7 @@ export default function JobSearch() {
 
           <select className='filters' name="experience" id="experience" value={filters.experience}
             onChange={handleFilterChange}>
-            <option value="">Experience</option>
+            <option value="">Select Experience</option>
             <option value="entry level">Entry Level</option>
             <option value="mid level">Mid Level</option>
             <option value="senior">Senior</option>
@@ -267,6 +290,24 @@ export default function JobSearch() {
         </button>
       </form>
 
+      {recentSearches.length > 0 && (
+        <div className="max-w-3xl mx-auto flex flex-wrap items-center gap-2 mt-2">
+          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">Top Searches:</span>
+          {[...recentSearches].sort((a, b) => (b.count || 1) - (a.count || 1)).slice(0, 3).map((s, idx) => (
+            <button
+              key={idx}
+              onClick={() => {
+                const nextParams = { q: s.q, location: s.location, page: '1' }
+                Object.entries(s.filters || {}).forEach(([k, v]) => { if (v) nextParams[k] = v })
+                setSearchParams(nextParams)
+              }}
+              className="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 text-sm font-semibold rounded-full hover:border-blue-300 hover:text-blue-600 hover:shadow-sm transition-all cursor-pointer"
+            >
+              {s.q} {s.location ? `in ${s.location}` : ''}
+            </button>
+          ))}
+        </div>
+      )}
       {error && (
         <div className="p-4 bg-red-50 text-red-700 rounded-2xl border border-red-100 flex items-center justify-center gap-2">
           <AlertCircle className="w-5 h-5" /> {error}
@@ -277,12 +318,12 @@ export default function JobSearch() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-slate-700">
-              {isEstimated ? `${total - 1}+` : total} result{total !== 1 ? 's' : ''} found
+              {isEstimated ? `${total}+` : total} result{total !== 1 ? 's' : ''} found
               {queryParam && <span className="text-blue-500 ml-1">for "{queryParam}"</span>}
               {locationParam && <span className="text-emerald-500 ml-1">in {locationParam}</span>}
             </h3>
             <span className="text-sm text-slate-400 font-medium">
-              Page {page} of {totalPages}{isEstimated ? '+' : ''}
+              Page {page} of {totalPages}
             </span>
           </div>
 

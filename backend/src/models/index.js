@@ -4,6 +4,7 @@ import JobModel from './Job.model.js'
 import JdAnalysisModel from './JdAnalysis.model.js'
 import ResumeModel from './Resume.model.js'
 import PrepMaterialModel from './PrepMaterial.model.js'
+import SearchCacheModel from './SearchCache.model.js'
 import { setupAssociations } from './associations.js'
 
 const db = {
@@ -13,6 +14,7 @@ const db = {
   JdAnalysis: JdAnalysisModel(sequelize),
   Resume: ResumeModel(sequelize),
   PrepMaterial: PrepMaterialModel(sequelize),
+  SearchCache: SearchCacheModel(sequelize),
 }
 
 setupAssociations(db)

@@ -10,6 +10,7 @@ const migrations = [
   '002_create_jd_analyses.sql',
   '003_create_resumes.sql',
   '004_create_prep_materials.sql',
+  '005_create_search_cache.sql',
 ]
 
 async function runMigrations() {

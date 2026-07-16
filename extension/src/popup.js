@@ -148,24 +148,22 @@ function resetForm() {
 }
 
 btnClaude.addEventListener('click', async () => {
+  const title = inputTitle.value.trim() || 'Unknown Title';
+  const company = inputCompany.value.trim() || 'Unknown Company';
+  const description = inputDescription.value.trim();
+
+  if (!description) {
+    showAlert(alertError, 'No job description found to send.');
+    return;
+  }
+
   btnClaude.disabled = true;
   spinnerClaude.style.display = 'inline-block';
   hideAlerts();
 
   try {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (!tab) throw new Error('No active browser tab found.');
-
-    const [{ result }] = await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: () => document.body.innerText,
-    });
-
-    if (!result || !result.trim()) {
-      throw new Error('Could not extract text content from the active tab.');
-    }
-
-    const prompt = `I am looking at this job posting. Please extract the Job Title, Company, and analyze the key requirements. Is this a good role?\n\nJob Details:\n${result.slice(0, 15000)}`;
+    const cleanDetails = `Title: ${title}\nCompany: ${company}\n\nDescription:\n${description}`;
+    const prompt = `I am looking at this job posting. Please analyze the key requirements and tell me if it's a good fit.\n\nJob Details:\n${cleanDetails}`;
 
     // Fallback clipboard logic for extensions
     const textarea = document.createElement('textarea');

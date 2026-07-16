@@ -27,17 +27,26 @@ const JobType_Adzuna = {
 }
 
 const DatePosted_Adzuna = {
-  'last 24 hours': 1,
-  'last 7 days': 7,
-  'last 30 days': 30
+  'since yesterday': 1,
+  'last week': 7,
+  'last month': 30
 }
 
 async function searchGoogleJobs(query, location, page = 1, nextPageToken = '', filters = {}) {
   if (!SERPAPI_KEY) return { results: [] }
 
   const queryParts = [query, location ? `in ${location}` : '']
-  if (filters.jobType) queryParts.push(filters.jobType.replace('_', ' '))
-  if (filters.datePosted) queryParts.push(filters.datePosted)
+  
+  // Use specific chips for SerpAPI
+  const chips = []
+  if (filters.datePosted && Serpapi_Date[filters.datePosted]) {
+    chips.push(`date_posted:${Serpapi_Date[filters.datePosted]}`)
+  }
+  if (filters.jobType && Serpapi_Job_Type[filters.jobType]) {
+    chips.push(`employment_type:${Serpapi_Job_Type[filters.jobType]}`)
+  }
+  
+  // Append workMode and experience to query text
   if (filters.workMode) queryParts.push(filters.workMode)
   if (filters.experience) queryParts.push(filters.experience)
 
@@ -48,6 +57,10 @@ async function searchGoogleJobs(query, location, page = 1, nextPageToken = '', f
     hl: 'en',
     gl: 'in', // Geotarget India
     api_key: SERPAPI_KEY
+  }
+  
+  if (chips.length > 0) {
+    params.chips = chips.join(',')
   }
 
   // Use token if available since Google Jobs pagination ignores start offset
@@ -85,7 +98,7 @@ async function searchGoogleJobs(query, location, page = 1, nextPageToken = '', f
     const response = await axios.get(url, {
       params,
       family: 4, // Force IPv4 to prevent IPv6 DNS timeout bug
-      timeout: 5000 // 5 seconds timeout
+      timeout: 10000 // 10 seconds timeout
     })
     data = response.data
 
@@ -142,9 +155,16 @@ async function searchAdzuna(query, location, page = 1, filters = {}, pageSize = 
     results_per_page: pageSize,
     'content-type': 'application/json'
   }
+  
+  // Apply specific Adzuna parameters
+  if (filters.jobType === 'full_time') params.full_time = 1
+  if (filters.jobType === 'part_time') params.part_time = 1
+  if (filters.jobType === 'contract') params.contract = 1
+  if (filters.datePosted && DatePosted_Adzuna[filters.datePosted]) {
+    params.max_days_old = DatePosted_Adzuna[filters.datePosted]
+  }
+
   const queryParts = [query]
-  if (filters.jobType) queryParts.push(filters.jobType.replace('_', ' '))
-  if (filters.datePosted) queryParts.push(filters.datePosted)
   if (filters.workMode) queryParts.push(filters.workMode)
   if (filters.experience) queryParts.push(filters.experience)
 
@@ -154,7 +174,7 @@ async function searchAdzuna(query, location, page = 1, filters = {}, pageSize = 
   const { data } = await axios.get(url, {
     params,
     family: 4, // Force IPv4 to prevent IPv6 DNS timeout bug
-    timeout: 5000
+    timeout: 10000
   })
 
   const results = (data.results || []).map(job => ({

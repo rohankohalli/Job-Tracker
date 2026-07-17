@@ -11,7 +11,8 @@ const SERPAPI_KEY = process.env.SERPAPI_KEY
 const Serpapi_Job_Type = {
   full_time: 'FULLTIME',
   part_time: 'PARTTIME',
-  contract: 'CONTRACTOR'
+  contract: 'CONTRACTOR',
+  internship: 'INTERN'
 }
 
 const Serpapi_Date = {
@@ -36,7 +37,7 @@ async function searchGoogleJobs(query, location, page = 1, nextPageToken = '', f
   if (!SERPAPI_KEY) return { results: [] }
 
   const queryParts = [query, location ? `in ${location}` : '']
-  
+
   // Use specific chips for SerpAPI
   const chips = []
   if (filters.datePosted && Serpapi_Date[filters.datePosted]) {
@@ -45,7 +46,7 @@ async function searchGoogleJobs(query, location, page = 1, nextPageToken = '', f
   if (filters.jobType && Serpapi_Job_Type[filters.jobType]) {
     chips.push(`employment_type:${Serpapi_Job_Type[filters.jobType]}`)
   }
-  
+
   // Append workMode and experience to query text
   if (filters.workMode) queryParts.push(filters.workMode)
   if (filters.experience) queryParts.push(filters.experience)
@@ -58,7 +59,7 @@ async function searchGoogleJobs(query, location, page = 1, nextPageToken = '', f
     gl: 'in', // Geotarget India
     api_key: SERPAPI_KEY
   }
-  
+
   if (chips.length > 0) {
     params.chips = chips.join(',')
   }
@@ -84,9 +85,9 @@ async function searchGoogleJobs(query, location, page = 1, nextPageToken = '', f
     })
 
     if (cachedResult) {
-      console.log("🔥 CACHE HIT: " + cacheKey)
-      data = typeof cachedResult.response_data === 'string' 
-        ? JSON.parse(cachedResult.response_data) 
+      // console.log("CACHE HIT: " + cacheKey)
+      data = typeof cachedResult.response_data === 'string'
+        ? JSON.parse(cachedResult.response_data)
         : cachedResult.response_data
     }
   } catch (error) {
@@ -94,7 +95,7 @@ async function searchGoogleJobs(query, location, page = 1, nextPageToken = '', f
   }
 
   if (!data) {
-    console.log("API HIT: " + cacheKey)
+    // console.log("API HIT: " + cacheKey)
     const response = await axios.get(url, {
       params,
       family: 4, // Force IPv4 to prevent IPv6 DNS timeout bug
@@ -155,16 +156,18 @@ async function searchAdzuna(query, location, page = 1, filters = {}, pageSize = 
     results_per_page: pageSize,
     'content-type': 'application/json'
   }
-  
+
   // Apply specific Adzuna parameters
   if (filters.jobType === 'full_time') params.full_time = 1
   if (filters.jobType === 'part_time') params.part_time = 1
   if (filters.jobType === 'contract') params.contract = 1
+
+  const queryParts = [query]
+  // Adzuna doesn't have an internship flag, so append it to text search
+  if (filters.jobType === 'internship') queryParts.push('internship')
   if (filters.datePosted && DatePosted_Adzuna[filters.datePosted]) {
     params.max_days_old = DatePosted_Adzuna[filters.datePosted]
   }
-
-  const queryParts = [query]
   if (filters.workMode) queryParts.push(filters.workMode)
   if (filters.experience) queryParts.push(filters.experience)
 
@@ -196,7 +199,6 @@ async function searchAdzuna(query, location, page = 1, filters = {}, pageSize = 
 
   return { results, total, page, totalPages, pageSize, isEstimated: false }
 }
-
 
 export async function searchJobs(query, location, page = 1, nextPageToken = '', filters = {}) {
   const errors = []

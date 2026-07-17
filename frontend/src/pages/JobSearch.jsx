@@ -241,7 +241,7 @@ export default function JobSearch() {
           </div>
         </div>
 
-        <div className="gap-1.5 flex items-center">
+        <div className="gap-1 flex items-center">
           <SlidersHorizontal />
           <select className='filters' name="jobType" id="jobType" value={filters.jobType}
             onChange={handleFilterChange}>
@@ -249,6 +249,7 @@ export default function JobSearch() {
             <option value="full_time">Full Time</option>
             <option value="part_time">Part Time</option>
             <option value="contract">Contract</option>
+            <option value="internship">Internship</option>
           </select>
 
           <select className='filters' name="datePosted" id="datePosted" value={filters.datePosted}
@@ -270,9 +271,11 @@ export default function JobSearch() {
           <select className='filters' name="experience" id="experience" value={filters.experience}
             onChange={handleFilterChange}>
             <option value="">Select Experience</option>
+            <option value="internship">Internship</option>
             <option value="entry level">Entry Level</option>
             <option value="mid level">Mid Level</option>
             <option value="senior">Senior</option>
+            <option value="director">Director / Executive</option>
           </select>
 
         </div>

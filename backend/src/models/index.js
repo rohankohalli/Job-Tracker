@@ -6,6 +6,8 @@ import ResumeModel from './Resume.model.js'
 import PrepMaterialModel from './PrepMaterial.model.js'
 import SearchCacheModel from './SearchCache.model.js'
 import { setupAssociations } from './associations.js'
+import UserModel from './User.model.js'
+import MasterResumeModel from './MasterResume.model.js'
 
 const db = {
   Sequelize,
@@ -15,6 +17,8 @@ const db = {
   Resume: ResumeModel(sequelize),
   PrepMaterial: PrepMaterialModel(sequelize),
   SearchCache: SearchCacheModel(sequelize),
+  User: UserModel(sequelize),
+  MasterResume: MasterResumeModel(sequelize),
 }
 
 setupAssociations(db)

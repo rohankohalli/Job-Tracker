@@ -8,7 +8,7 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST,
     port: process.env.DB_PORT || 3306,
     dialect: 'mysql',
-    logging: false, // disable SQL console logging for cleaner output
+    logging: false,
     pool: {
       max: 15,
       min: 0,

@@ -11,6 +11,8 @@ const migrations = [
   '003_create_resumes.sql',
   '004_create_prep_materials.sql',
   '005_create_search_cache.sql',
+  '006_create_users.sql',
+  '007_create_master_resume.sql'
 ]
 
 async function runMigrations() {

@@ -1,4 +1,5 @@
 // import dns from 'dns'
+import db from './models/index.js'
 // dns.setDefaultResultOrder('ipv4first')
 
 import express from 'express'
@@ -31,4 +32,8 @@ app.use((err, req, res, next) => {
 
 const port = process.env.PORT ?? 8000
 
-app.listen(port, () => console.log(`Server listening on port ${port}`))
+db.sequelize.sync({ alter: true }).then(() => {
+  app.listen(port, () => console.log(`Server listening on port ${port} (Database synced)`))
+}).catch(err => {
+  console.error('Failed to sync database:', err)
+})

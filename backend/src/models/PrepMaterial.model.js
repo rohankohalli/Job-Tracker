@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize'
+import sequelize from '../config/dbconfig.js'
 
-export default (sequelize) => {
-  return sequelize.define('PrepMaterial', {
+const PrepMaterial = sequelize.define('PrepMaterial', {
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
@@ -29,4 +29,5 @@ export default (sequelize) => {
     createdAt: 'created_at',
     updatedAt: 'updated_at',
   })
-}
+
+export default PrepMaterial

@@ -20,8 +20,4 @@ npm-debug.log*
 !.vscode/extensions.json
 .idea/
 .gitignore
-backend/src/scripts/check_pdf_keys.js
-backend/src/scripts/list_models.js
-backend/test_serpapi.js
-backend/test_search.js
-backend/test_genai.js
+

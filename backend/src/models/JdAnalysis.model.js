@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize'
+import sequelize from '../config/dbconfig.js'
 
-export default (sequelize) => {
-  return sequelize.define('JdAnalysis', {
+const JdAnalysis = sequelize.define('JdAnalysis', {
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
@@ -54,4 +54,5 @@ export default (sequelize) => {
     createdAt: 'created_at',
     updatedAt: false,
   })
-}
+
+export default JdAnalysis

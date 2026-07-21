@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize'
+import sequelize from '../config/dbconfig.js'
 
-export default (sequelize) => {
-    return sequelize.define('Users', {
+const User = sequelize.define('Users', {
         id: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
@@ -16,6 +16,10 @@ export default (sequelize) => {
             allowNull: false,
             unique: true,
         },
+        mobileNo: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         password: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -23,4 +27,5 @@ export default (sequelize) => {
     }, {
         tableName: 'users',
     })
-}
+
+export default User

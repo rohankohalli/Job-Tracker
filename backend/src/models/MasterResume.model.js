@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize"
+import sequelize from '../config/dbconfig.js'
 
-export default (sequelize) => {
-    return sequelize.define('Job', {
+const MasterResume = sequelize.define('Job', {
         id: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
@@ -24,4 +24,5 @@ export default (sequelize) => {
             defaultValue: false,
         }
     })
-}
+
+export default MasterResume

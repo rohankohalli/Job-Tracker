@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize'
+import sequelize from '../config/dbconfig.js'
 
-export default function (sequelize) {
-  return sequelize.define('SearchCache', {
+const SearchCache = sequelize.define('SearchCache', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -30,4 +30,5 @@ export default function (sequelize) {
     createdAt: 'created_at',
     updatedAt: 'updated_at'
   })
-}
+
+export default SearchCache

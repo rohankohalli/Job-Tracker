@@ -1,11 +1,6 @@
 import { PDFParse } from 'pdf-parse'
 import mammoth from 'mammoth'
 
-/**
- * Parse uploaded resume file (PDF or DOCX) to extract raw text content.
- * @param {object} file - The file object from multer memoryStorage (contains buffer, mimetype, size)
- * @returns {Promise<string>} - Extracted text content
- */
 export async function parseResumeFile(file) {
   if (!file) {
     throw new Error('No file provided for parsing.')

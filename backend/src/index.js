@@ -1,6 +1,4 @@
-// import dns from 'dns'
 import db from './models/index.js'
-// dns.setDefaultResultOrder('ipv4first')
 
 import express from 'express'
 import cors from 'cors'
@@ -9,6 +7,7 @@ import analysisRouter from './routes/analysis.routes.js'
 import scoringRouter from './routes/scoring.routes.js'
 import prepRouter from './routes/prep.routes.js'
 import searchRouter from './routes/search.routes.js'
+import usersRouter from './routes/users.routes.js'
 
 const app = express()
 
@@ -21,6 +20,7 @@ app.use('/api/jobs/:id', analysisRouter)
 app.use('/api/jobs/:id', scoringRouter)
 app.use('/api/jobs/:id', prepRouter)
 app.use('/api/search', searchRouter)
+app.use('/api/users', usersRouter)
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }))
 
@@ -30,10 +30,11 @@ app.use((err, req, res, next) => {
   res.status(status).json({ error: err.message ?? 'Internal Server Error' })
 })
 
-const port = process.env.PORT ?? 8000
+const port = process.env.PORT
 
-db.sequelize.sync({ alter: true }).then(() => {
-  app.listen(port, () => console.log(`Server listening on port ${port} (Database synced)`))
-}).catch(err => {
+try {
+  await db.sequelize.sync({ alter: false })
+  app.listen(port, () => console.log(`Server listening on port ${port}`))
+} catch (err) {
   console.error('Failed to sync database:', err)
-})
+}

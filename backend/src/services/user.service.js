@@ -1,20 +1,20 @@
-export async function register(req, res, next) {
-    try {
-        const { name, email, mobileNo, password } = req.body;
-        const existing = await Users.findOne({ where: { email } })
-        if (existing) return res.status(409).json({ message: "Email already in use" })
+export async function register(userData) {
+    const { name, email, mobileNo, password } = userData
+    const existing = await Users.findOne({ where: { email } })
+    if (existing) return { error: "Email already in use" }
 
-        const hashed = await bcrypt.hash(password, 10);
-        await Users.create({
-            name,
-            email,
-            dateOfBirth,
-            mobileNo,
-            password: hashed,
-        })
+    const hashedPass = await bcrypt.hash(password, 10);
 
-        res.status(201).json({ message: "User registered successfully" })
-    } catch (err) {
-        next(err)
+    const User = await Users.create({
+        name,
+        email,
+        dateOfBirth,
+        mobileNo,
+        password: hashedPass,
+    })
+
+    return {
+        id: user.id,
+        message: "User registered successfully"
     }
 }

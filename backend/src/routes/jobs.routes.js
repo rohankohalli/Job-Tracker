@@ -6,24 +6,24 @@ import {
   createJobRules,
   updateJobRules,
   updateStatusRules,
-} from '../middleware/validators/jobs.validator.js'
+} from '../validators/jobs.validator.js'
 
 const router = Router()
 
-router.get('/', jobsController.listJobs) // GET  /api/jobs
+router.get('/', jobsController.listJobs)
 
-router.get('/:id', getOrDeleteJobRules, jobsController.getJob) // GET  /api/jobs/:id
+router.get('/:id', getOrDeleteJobRules, jobsController.getJob)
 
-router.post('/', createJobRules, jobsController.createJob) // POST /api/jobs
+router.post('/', createJobRules, jobsController.createJob)
 
-router.put('/:id', updateJobRules, jobsController.updateJob) // PUT  /api/jobs/:id
+router.put('/:id', updateJobRules, jobsController.updateJob)
 
-router.patch('/:id/status', updateStatusRules, jobsController.updateStatus) // PATCH /api/jobs/:id/status
+router.patch('/:id/status', updateStatusRules, jobsController.updateStatus)
 
-router.delete('/:id', getOrDeleteJobRules, jobsController.deleteJob) // DELETE /api/jobs/:id
+router.delete('/:id', getOrDeleteJobRules, jobsController.deleteJob)
 
-// Discovery / Capture
-router.post('/capture', discoveryController.captureUrl) // POST /api/jobs/capture
-router.post('/parse', discoveryController.parseJD) // POST /api/jobs/parse
+// Capture
+router.post('/capture', discoveryController.captureUrl)
+router.post('/parse', discoveryController.parseJD)
 
 export default router

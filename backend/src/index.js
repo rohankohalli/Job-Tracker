@@ -11,7 +11,10 @@ import usersRouter from './routes/users.routes.js'
 
 const app = express()
 
-app.use(cors())
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:5050', 'http://127.0.0.1:5050'],
+  credentials: true
+}))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
@@ -34,7 +37,7 @@ app.use((err, req, res, next) => {
 const port = process.env.PORT
 
 try {
-  await db.sequelize.sync({ alter: false })
+  await db.sequelize.sync({ alter: true })
   app.listen(port, () => console.log(`Server listening on port ${port}`))
 } catch (err) {
   console.error('Failed to sync database:', err)

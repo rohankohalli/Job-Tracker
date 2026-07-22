@@ -8,7 +8,12 @@ import {
   updateStatusRules,
 } from '../validators/jobs.validator.js'
 
+import { authenticateToken } from '../middleware/auth.middleware.js'
+
 const router = Router()
+
+// Protect all job routes
+router.use(authenticateToken)
 
 router.get('/', jobsController.listJobs)
 

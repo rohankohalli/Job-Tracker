@@ -62,6 +62,9 @@ export async function refreshTokenService(token) {
         const newRefreshToken = generateRefreshToken(user, true)
 
         return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
             accessToken,
             refreshToken: newRefreshToken
         }

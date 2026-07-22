@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BASE_URL = import.meta.env.VITE_API_URL
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
 
 // Local memory storage for the access token
 let inMemoryToken = null
@@ -39,13 +39,13 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
 
-    // If the error is 401 and we haven't already retried this specific request
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // If the error is 401, not a retry, and NOT the refresh endpoint itself
+    if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url.includes('/users/refresh')) {
       originalRequest._retry = true
 
       try {
         // Automatically try to get a new access token using the HttpOnly cookie
-        const res = await axios.post(`${BASE_URL}/api/users/refresh`, {}, { withCredentials: true })
+        const res = await axios.post(`${BASE_URL}/users/refresh`, {}, { withCredentials: true })
 
         // Save the new token to local memory
         const newAccessToken = res.data.accessToken
@@ -57,7 +57,7 @@ apiClient.interceptors.response.use(
       } catch (refreshError) {
         // If the refresh fails (e.g. refresh token expired), clear memory and log them out
         setAccessToken(null)
-        // Optional: Redirect to login page here, e.g. window.location.href = '/login'
+        window.location.href = '/login'
         return Promise.reject(refreshError)
       }
     }

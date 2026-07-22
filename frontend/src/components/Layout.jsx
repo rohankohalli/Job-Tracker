@@ -1,5 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { Plus, LayoutGrid, Target, Search } from 'lucide-react'
+import { Plus, LayoutGrid, Target, Search, LogOut } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
 
 function CatalystLogo({ className = 'w-8 h-8' }) {
   return (
@@ -16,6 +17,15 @@ function CatalystLogo({ className = 'w-8 h-8' }) {
 
 export default function Layout() {
   const location = useLocation()
+  const { user, logout } = useAuth()
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+    } catch (err) {
+      console.error('Logout failed:', err)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans text-slate-900 selection:bg-blue-100 selection:text-blue-900">
@@ -65,7 +75,14 @@ export default function Layout() {
               <Plus className="w-4 h-4" />
               Track Opportunity
             </Link>
-            <CatalystLogo className="w-10 h-10" />
+            
+            <button 
+              onClick={handleLogout}
+              className="hidden sm:flex items-center gap-2 text-slate-500 hover:text-slate-900 font-bold transition-colors ml-4"
+              title="Logout"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </header>

@@ -12,23 +12,16 @@ import { authenticateToken } from '../middleware/auth.middleware.js'
 
 const router = Router()
 
-// Protect all job routes
+// Everything below this line requires a valid login token
 router.use(authenticateToken)
 
 router.get('/', jobsController.listJobs)
-
 router.get('/:id', getOrDeleteJobRules, jobsController.getJob)
-
 router.post('/', createJobRules, jobsController.createJob)
-
 router.put('/:id', updateJobRules, jobsController.updateJob)
-
 router.patch('/:id/status', updateStatusRules, jobsController.updateStatus)
-
 router.delete('/:id', getOrDeleteJobRules, jobsController.deleteJob)
 
-// Capture
 router.post('/capture', discoveryController.captureUrl)
 router.post('/parse', discoveryController.parseJD)
-
 export default router

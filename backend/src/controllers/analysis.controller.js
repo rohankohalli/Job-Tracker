@@ -3,7 +3,7 @@ import * as analysisService from '../services/analysis.service.js'
 
 export async function triggerAnalysis(req, res, next) {
   try {
-    const job = await jobsService.getJobById(Number(req.params.id))
+    const job = await jobsService.getJobById(Number(req.params.id), req.user.id)
     if (!job) return res.status(404).json({ error: 'Job not found' })
     if (!job.description) {
       return res.status(422).json({ error: 'Job has no description to analyze' })

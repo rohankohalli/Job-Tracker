@@ -32,14 +32,14 @@ export default function Register() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       {/* The main white card */}
-      <div className="w-full max-w-105 bg-white rounded-2xl shadow-2xl overflow-hidden relative mt-8 mb-8">
+      <div className="w-full max-w-105 bg-white rounded-2xl shadow-2xl overflow-hidden relative mt-6 mb-8">
 
         {/* Subtle blue accent bar at the top */}
-        <div className="h-2 w-full bg-blue-600"></div>
+        <div className="h-2 w-full bg-black"></div>
 
         <div className="p-8 sm:p-10">
           <div className="text-center mb-10">
-            <h1 className="text-3xl font-black text-slate-950 tracking-tight">Create Account</h1>
+            <h1 className="text-3xl font-black text-slate-950">Create Account</h1>
             <p className="text-slate-500 mt-2 font-medium text-sm">Join Career Compass AI today.</p>
           </div>
 
@@ -51,8 +51,8 @@ export default function Register() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-950 uppercase tracking-wider ml-1">Full Name</label>
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-slate-950 uppercase ml-1">Full Name *</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                   <User className="h-4 w-4" />
@@ -69,7 +69,7 @@ export default function Register() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-950 uppercase tracking-wider ml-1">Email</label>
+              <label className="text-xs font-bold text-slate-950 uppercase ml-1">Email *</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                   <Mail className="h-4 w-4" />
@@ -86,7 +86,7 @@ export default function Register() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-950 uppercase tracking-wider ml-1">Mobile Number</label>
+              <label className="text-xs font-bold text-slate-950 uppercase ml-1">Mobile Number *</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                   <Phone className="h-4 w-4" />
@@ -103,7 +103,7 @@ export default function Register() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-950 uppercase tracking-wider ml-1">Password</label>
+              <label className="text-xs font-bold text-slate-950 uppercase wider ml-1">Password *</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                   <Lock className="h-4 w-4" />
@@ -122,14 +122,14 @@ export default function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl transition-colors flex items-center justify-center gap-2 group disabled:opacity-70 mt-2 shadow-lg shadow-blue-600/20"
+              className="w-full bg-black text-white font-bold py-3.5 px-4 rounded-xl transition-colors flex items-center justify-center gap-2 disabled:opacity-70 mt-2 shadow-lg shadow-blue-600/20 cursor-pointer"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <>
                   Sign Up
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 hover:translate-x-1 transition-transform" />
                 </>
               )}
             </button>

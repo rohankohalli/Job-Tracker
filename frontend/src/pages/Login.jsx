@@ -20,7 +20,6 @@ export default function Login() {
 
     try {
       await login(formData)
-      // Navigation is handled inside the login function in AuthContext
     } catch (err) {
       setError(err.message || 'Failed to login')
     } finally {
@@ -45,7 +44,7 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
+              <label className="text-sm font-bold text-slate-700 ml-1">Email Address *</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                   <Mail className="h-5 w-5" />
@@ -62,7 +61,7 @@ export default function Login() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700 ml-1">Password</label>
+              <label className="text-sm font-bold text-slate-700 ml-1">Password *</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                   <Lock className="h-5 w-5" />
@@ -81,14 +80,14 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-2xl transition-all flex items-center justify-center gap-2 group disabled:opacity-70 mt-4 shadow-lg shadow-slate-300 cursor-pointer"
+              className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-2xl transition-all flex items-center justify-center gap-2 disabled:opacity-70 mt-4 shadow-lg shadow-slate-300 cursor-pointer"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <>
                   Sign In
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-5 h-5 hover:translate-x-1 transition-transform" />
                 </>
               )}
             </button>

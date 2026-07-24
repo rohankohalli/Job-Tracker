@@ -37,7 +37,6 @@ export default function Layout() {
             </div>
             <div className="flex flex-col">
               <span className="font-black text-lg tracking-tight leading-none text-slate-900">Career Compass AI</span>
-              {/* <span className="text-[10px] font-black text-blue-900 uppercase mt-0.5">AI Job Copilot</span> */}
             </div>
           </Link>
 
@@ -75,10 +74,10 @@ export default function Layout() {
               <Plus className="w-4 h-4" />
               Track Opportunity
             </Link>
-            
-            <button 
+
+            <button
               onClick={handleLogout}
-              className="hidden sm:flex items-center gap-2 text-slate-500 hover:text-slate-900 font-bold transition-colors ml-4"
+              className="hidden sm:flex items-center gap-2 text-red-500 hover:text-red-700 font-bold transition-colors ml-4 cursor-pointer"
               title="Logout"
             >
               <LogOut className="w-5 h-5" />

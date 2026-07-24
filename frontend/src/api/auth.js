@@ -17,4 +17,5 @@ export const logout = async () => {
 
 export const refreshToken = async () => {
   const response = await apiClient.post('/users/refresh')
+  return response
 }

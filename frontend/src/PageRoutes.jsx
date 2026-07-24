@@ -6,18 +6,26 @@ import AddJob from './pages/AddJob'
 import JobSearch from './pages/JobSearch'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import Profile from './pages/Profie'
+import ProtectedRoute from './ProtectedRoutes'
+import PageNotFound from './pages/PageNotFound'
 
 export default function pageRoutes() {
     return (
         <Routes>
-            <Route path="/" element={<Layout />}>
-                <Route index element={<JobList />} />
-                <Route path="search" element={<JobSearch />} />
-                <Route path="addjob" element={<AddJob />} />
-                <Route path="jobs/:id" element={<JobDetail />} />
+            <Route element={<ProtectedRoute />}>
+                <Route path="/" element={<Layout />}>
+                    <Route index element={<JobList />} />
+                    <Route path="search" element={<JobSearch />} />
+                    <Route path="addjob" element={<AddJob />} />
+                    <Route path="jobs/:id" element={<JobDetail />} />
+                    <Route path="profile" element={<Profile />} />
+                </Route>
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+
+            <Route path="*" element={<PageNotFound />} />
         </Routes>
 
     )

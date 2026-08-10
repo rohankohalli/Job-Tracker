@@ -6,7 +6,6 @@ export default function Profile() {
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-black text-slate-900">Profile Page</h1>
                     <p className="text-slate-500 mt-2 font-medium">Manage your Account</p>
-
                 </div>
             </div>
         </div>

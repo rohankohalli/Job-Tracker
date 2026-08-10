@@ -6,7 +6,7 @@ import AddJob from './pages/AddJob'
 import JobSearch from './pages/JobSearch'
 import Login from './pages/Login'
 import Register from './pages/Register'
-import Profile from './pages/Profie'
+import Profile from './pages/Profile'
 import ProtectedRoute from './ProtectedRoutes'
 import PageNotFound from './pages/PageNotFound'
 

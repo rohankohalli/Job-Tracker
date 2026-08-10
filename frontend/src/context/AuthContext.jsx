@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import apiClient, { setAccessToken } from '../api/client'
+import { setAccessToken } from '../api/client'
 import { login as apiLogin, register as apiRegister, logout as apiLogout, refreshToken } from '../api/auth'
 import { useNavigate } from 'react-router-dom'
 
@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
         const res = await refreshToken()
         setAccessToken(res.data.accessToken)
         setUser({ id: res.data.id, name: res.data.name, email: res.data.email })
-      } catch (err) {
+      } catch {
         // If refresh fails, they are logged out. Do nothing.
         setUser(null)
       } finally {

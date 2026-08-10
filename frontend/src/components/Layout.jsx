@@ -17,7 +17,7 @@ function CatalystLogo({ className = 'w-8 h-8' }) {
 
 export default function Layout() {
   const location = useLocation()
-  const { user, logout } = useAuth()
+  const { logout } = useAuth()
 
   const handleLogout = async () => {
     try {

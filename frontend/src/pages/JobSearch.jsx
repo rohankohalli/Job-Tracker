@@ -4,13 +4,6 @@ import { searchJobs, createJob } from '../api/jobs'
 import { Search, Building2, MapPin, Globe, Plus, AlertCircle, ChevronLeft, ChevronRight, SlidersHorizontal } from 'lucide-react'
 import "../styles/JobSearch.css"
 
-const INITIAL_FILTERS = {
-  jobType: '',
-  datePosted: '',
-  workMode: '',
-  experience: '',
-}
-
 export default function JobSearch() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -47,7 +40,7 @@ export default function JobSearch() {
     try {
       const saved = localStorage.getItem('search_history')
       return saved ? JSON.parse(saved) : []
-    } catch (e) {
+    } catch {
       return []
     }
   })

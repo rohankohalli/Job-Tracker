@@ -94,11 +94,16 @@ export default function Login() {
           </form>
         </div>
 
-        <div className="bg-slate-50 p-6 text-center border-t border-slate-100">
-          <p className="text-sm font-medium text-slate-600">
+        <div className="bg-slate-50 p-6 text-center border-t border-slate-100 flex items-center justify-between">
+          <p className="text-sm font-medium text-slate-600 flex flex-col items-center gap-1">
             Don't have an account?{' '}
             <Link to="/register" className="text-blue-600 font-bold hover:text-blue-700">
               Create one now
+            </Link>
+          </p>
+          <p>
+            <Link to="/forgot-password" className="text-blue-600 text-sm font-bold hover:text-blue-700">
+              Forgot Password?
             </Link>
           </p>
         </div>

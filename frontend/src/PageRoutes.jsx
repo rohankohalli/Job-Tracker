@@ -9,6 +9,7 @@ import Register from './pages/Register'
 import Profile from './pages/Profile'
 import ProtectedRoute from './ProtectedRoutes'
 import PageNotFound from './pages/PageNotFound'
+import ForgotPassword from './pages/ForgotPassword'
 
 export default function pageRoutes() {
     return (
@@ -25,6 +26,7 @@ export default function pageRoutes() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="*" element={<PageNotFound />} />
         </Routes>
 

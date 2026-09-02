@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { searchJobs, createJob } from '../api/jobs'
-import { Search, Building2, MapPin, Globe, Plus, AlertCircle, ChevronLeft, ChevronRight, SlidersHorizontal } from 'lucide-react'
+import { Search, Building2, MapPin, Globe, Plus, AlertCircle, ChevronLeft, ChevronRight, SlidersHorizontal, Clock } from 'lucide-react'
 import "../styles/JobSearch.css"
 
 export default function JobSearch() {
@@ -249,6 +249,7 @@ export default function JobSearch() {
             onChange={handleFilterChange}>
             <option value="">Select Date Posted</option>
             <option value="since yesterday">Last 24 hours</option>
+            <option value="in the last 3 days">Last 3 days</option>
             <option value="last week">Last 7 days</option>
             <option value="last month">Last 30 days</option>
           </select>
@@ -339,6 +340,9 @@ export default function JobSearch() {
                     </span>
                     <span className="flex items-center gap-1.5">
                       <Globe className="w-4 h-4" /> {job.source}
+                    </span>
+                    <span className="flex items-center gap-1.5 text-slate-400">
+                      <Clock className='w-4 h-4' /> {job.published}
                     </span>
                   </div>
 

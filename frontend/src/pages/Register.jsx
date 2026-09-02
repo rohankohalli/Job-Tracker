@@ -30,11 +30,9 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      {/* The main white card */}
+    <div className="min-h-screen flex items-center justify-center p-2">
       <div className="w-full max-w-105 bg-white rounded-2xl shadow-2xl overflow-hidden relative mt-6 mb-8">
 
-        {/* Subtle blue accent bar at the top */}
         <div className="h-2 w-full bg-black"></div>
 
         <div className="p-8 sm:p-10">
@@ -49,7 +47,7 @@ export default function Register() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
 
             <div className="space-y-1">
               <label className="text-xs font-bold text-slate-950 uppercase ml-1">Full Name *</label>

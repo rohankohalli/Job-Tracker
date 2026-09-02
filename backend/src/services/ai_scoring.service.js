@@ -9,7 +9,7 @@ Role being evaluated: "${jobTitle}"
 - Missing:  ${missingSkills.join(', ') || 'None'}
 
 ## Your Task
-Evaluate the resume on exactly 3 dimensions. Return ONLY a JSON object — no markdown, no explanation.
+Evaluate the resume on exactly 3 dimensions. Return ONLY a JSON object - no markdown, no explanation.
 
 ## Scoring Rubric
 

@@ -11,10 +11,22 @@ import usersRouter from './routes/users.routes.js'
 
 const app = express()
 
+const allowedOrigins = process.env.FRONTEND_URL
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:5050', 'http://127.0.0.1:5050'],
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true)
+
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.'
+      return callback(new Error(msg), false)
+    }
+    return callback(null, true)
+  },
   credentials: true
 }))
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
@@ -34,10 +46,10 @@ app.use((err, req, res, next) => {
   res.status(status).json({ error: err.message ?? 'Internal Server Error' })
 })
 
-const port = process.env.PORT
+const port = process.env.PORT || 8000
 
 try {
-  await db.sequelize.sync({ alter: true })
+  await db.sequelize.sync()
   app.listen(port, () => console.log(`Server listening on port ${port}`))
 } catch (err) {
   console.error('Failed to sync database:', err)

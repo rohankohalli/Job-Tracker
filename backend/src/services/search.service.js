@@ -17,6 +17,7 @@ const Serpapi_Job_Type = {
 
 const Serpapi_Date = {
   'since yesterday': 'today',
+  'in the last 3 days': '3days',
   'last week': 'week',
   'last month': 'month'
 }
@@ -29,6 +30,7 @@ const JobType_Adzuna = {
 
 const DatePosted_Adzuna = {
   'since yesterday': 1,
+  'in the last 3 days': 3,
   'last week': 7,
   'last month': 30
 }

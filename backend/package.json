@@ -8,7 +8,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node --watch --env-file=.env src/index.js",
-    "build": "echo \"No build step required\""
+    "dev": "node src/index.js"
   },
   "dependencies": {
     "@google/genai": "^2.12.0",

@@ -12,13 +12,15 @@ import usersRouter from './routes/users.routes.js'
 const app = express()
 
 const allowedOrigins = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL.split(',').map((url) => url.trim())
+  : []
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true)
 
-    if (allowedOrigins.indexOf(origin) === -1) {
+    if (allowedOrigins.length > 0 && !allowedOrigins.includes(origin)) {
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.'
       return callback(new Error(msg), false)
     }
@@ -46,10 +48,12 @@ app.use((err, req, res, next) => {
   res.status(status).json({ error: err.message ?? 'Internal Server Error' })
 })
 
-try {
-  await db.sequelize.sync()
-} catch (err) {
-  console.error('Failed to sync database:', err)
+if (!process.env.VERCEL || process.env.SYNC_DB === 'true') {
+  try {
+    await db.sequelize.sync()
+  } catch (err) {
+    console.error('Failed to sync database:', err)
+  }
 }
 
 if (!process.env.VERCEL) {

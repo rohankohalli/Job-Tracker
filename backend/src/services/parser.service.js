@@ -1,4 +1,4 @@
-import { PDFParse } from 'pdf-parse'
+import { getDocumentProxy, extractText } from 'unpdf'
 import mammoth from 'mammoth'
 
 export async function parseResumeFile(file) {
@@ -10,9 +10,9 @@ export async function parseResumeFile(file) {
 
   if (mimetype === 'application/pdf') {
     try {
-      const parser = new PDFParse({ data: buffer })
-      const result = await parser.getText()
-      return result.text.trim()
+      const pdf = await getDocumentProxy(new Uint8Array(buffer))
+      const { text } = await extractText(pdf, { mergePages: true })
+      return text.trim()
     } catch (err) {
       throw new Error(`Failed to parse PDF file: ${err.message}`)
     }

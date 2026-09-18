@@ -1,10 +1,16 @@
 import * as userService from '../services/user.service.js'
 
+const isProduction = process.env.NODE_ENV === 'production' || !!process.env.VERCEL
+
+const getCookieOptions = () => ({
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : (process.env.COOKIE_SAME_SITE || 'lax'),
+})
+
 const setRefreshTokenCookie = (res, token) => {
     res.cookie('refreshToken', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.COOKIE_SAME_SITE || 'strict',
+        ...getCookieOptions(),
         maxAge: 7 * 24 * 60 * 60 * 1000
     })
 }
@@ -64,7 +70,7 @@ export async function refreshToken(req, res, next) {
 
 export async function logout(req, res, next) {
     try {
-        res.clearCookie('refreshToken')
+        res.clearCookie('refreshToken', getCookieOptions())
         return res.status(200).json({ message: 'Logged out successfully' })
     } catch (err) {
         next(err)

@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node --watch --env-file=.env src/index.js",
     "dev": "node src/index.js",
-    "build": "echo \"Error: no build step specified\" && exit 1"
+    "build": "echo \"No build step specified\""
   },
   "dependencies": {
     "@google/genai": "^2.12.0",

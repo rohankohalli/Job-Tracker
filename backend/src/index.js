@@ -46,11 +46,16 @@ app.use((err, req, res, next) => {
   res.status(status).json({ error: err.message ?? 'Internal Server Error' })
 })
 
-const port = process.env.PORT || 8000
-
 try {
   await db.sequelize.sync()
-  app.listen(port, () => console.log(`Server listening on port ${port}`))
 } catch (err) {
   console.error('Failed to sync database:', err)
 }
+
+if (!process.env.VERCEL) {
+  const port = process.env.PORT || 8000
+  app.listen(port, () => console.log(`Server listening on port ${port}`))
+}
+
+export default app
+

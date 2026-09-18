@@ -41,6 +41,7 @@ app.use('/api/search', searchRouter)
 app.use('/api/users', usersRouter)
 
 app.get('/health', (req, res) => res.json({ status: 'Server running' }))
+app.get('/', (req, res) => res.json({ status: 'ok', message: 'Job Tracker Backend API is running', health: '/health' }))
 
 app.use((err, req, res, next) => {
   console.error(err)

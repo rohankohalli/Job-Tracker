@@ -42,6 +42,15 @@ app.use('/api/users', usersRouter)
 
 app.get('/health', (req, res) => res.json({ status: 'Server running' }))
 app.get('/', (req, res) => res.json({ status: 'ok', message: 'Job Tracker Backend API is running', health: '/health' }))
+app.get('/api/sync-db', async (req, res) => {
+  try {
+    await db.sequelize.sync()
+    res.json({ success: true, message: 'All database tables created/synced successfully on Aiven!' })
+  } catch (err) {
+    console.error('Database sync error:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
 
 app.use((err, req, res, next) => {
   console.error(err)

@@ -42,8 +42,8 @@ export default function Layout() {
 
           <nav className="flex items-center gap-4 md:gap-8">
             <Link
-              to="/"
-              className={`text-sm font-bold transition-colors flex items-center gap-2 ${location.pathname === '/' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'
+              to="/dashboard"
+              className={`text-sm font-bold transition-colors flex items-center gap-2 ${location.pathname === '/dashboard' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'
                 }`}
             >
               <LayoutGrid className="w-4 h-4" />

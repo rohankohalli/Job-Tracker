@@ -15,9 +15,9 @@ import LandingPage from './pages/LandingPage'
 export default function pageRoutes() {
     return (
         <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route element={<ProtectedRoute />}>
-                <Route element={<Layout />}>
+            <Route element={<Layout />}>
+                <Route path="/" element={<LandingPage />} />
+                <Route element={<ProtectedRoute />}>
                     <Route path="/dashboard" element={<JobList />} />
                     <Route path="search" element={<JobSearch />} />
                     <Route path="addjob" element={<AddJob />} />

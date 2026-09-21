@@ -17,7 +17,7 @@ function CatalystLogo({ className = 'w-8 h-8' }) {
 
 export default function Layout() {
   const location = useLocation()
-  const { logout } = useAuth()
+  const { user, logout } = useAuth()
 
   const handleLogout = async () => {
     try {
@@ -40,49 +40,87 @@ export default function Layout() {
             </div>
           </Link>
 
-          <nav className="flex items-center gap-4 md:gap-8">
-            <Link
-              to="/dashboard"
-              className={`text-sm font-bold transition-colors flex items-center gap-2 ${location.pathname === '/dashboard' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'
-                }`}
-            >
-              <LayoutGrid className="w-4 h-4" />
-              Dashboard
-            </Link>
-            <Link
-              to="/search"
-              className={`text-sm font-bold transition-colors flex items-center gap-2 ${location.pathname === '/search' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'
-                }`}
-            >
-              <Search className="w-4 h-4" />
-              Discover
-            </Link>
-            <Link
-              to="/addjob"
-              className={`text-sm font-bold transition-colors flex items-center gap-2 ${location.pathname === '/addjob' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'
-                }`}
-            >
-              <Target className="w-4 h-4" />
-              Tracker
-            </Link>
-          </nav>
+          {user ? (
+            <>
+              <nav className="flex items-center gap-4 md:gap-8">
+                <Link
+                  to="/dashboard"
+                  className={`text-sm font-bold transition-colors flex items-center gap-2 ${location.pathname === '/dashboard' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                >
+                  <LayoutGrid className="w-4 h-4" />
+                  Dashboard
+                </Link>
+                <Link
+                  to="/search"
+                  className={`text-sm font-bold transition-colors flex items-center gap-2 ${location.pathname === '/search' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                >
+                  <Search className="w-4 h-4" />
+                  Discover
+                </Link>
+                <Link
+                  to="/addjob"
+                  className={`text-sm font-bold transition-colors flex items-center gap-2 ${location.pathname === '/addjob' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                >
+                  <Target className="w-4 h-4" />
+                  Tracker
+                </Link>
+              </nav>
 
-          <div className="flex items-center gap-4">
-            <Link to="/addjob"
-              className="hidden sm:flex items-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded-2xl hover:bg-slate-800 transition-all text-sm font-bold shadow-lg shadow-slate-200"
-            >
-              <Plus className="w-4 h-4" />
-              Track Opportunity
-            </Link>
+              <div className="flex items-center gap-4">
+                <Link to="/addjob"
+                  className="hidden sm:flex items-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded-2xl hover:bg-slate-800 transition-all text-sm font-bold shadow-lg shadow-slate-200"
+                >
+                  <Plus className="w-4 h-4" />
+                  Track Opportunity
+                </Link>
 
-            <button
-              onClick={handleLogout}
-              className="hidden sm:flex items-center gap-0.5 text-red-500 hover:text-red-700 font-bold transition-colors ml-4 cursor-pointer"
-              title="Logout"
-            >
-              <LogOut className="w-5 h-5" />Logout
-            </button>
-          </div>
+                <button
+                  onClick={handleLogout}
+                  className="hidden sm:flex items-center gap-0.5 text-red-500 hover:text-red-700 font-bold transition-colors ml-4 cursor-pointer"
+                  title="Logout"
+                >
+                  <LogOut className="w-5 h-5" />Logout
+                </button>
+              </div>
+            </>
+
+          ) : (
+            <>
+              <nav className="flex items-center gap-6 md:gap-8">
+                <a
+                  href="#how-it-works"
+                  className="hidden md:block text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors"
+                >
+                  How it works
+                </a>
+                <a
+                  href="#features"
+                  className="hidden md:block text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors"
+                >
+                  Features
+                </a>
+              </nav>
+
+              <div className="flex items-center gap-4">
+                <Link
+                  to="/login"
+                  className="text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors"
+                >
+                  Log in
+                </Link>
+
+                <Link
+                  to="/register"
+                  className="bg-slate-900 text-white px-5 py-2.5 rounded-2xl hover:bg-slate-800 transition-all text-sm font-bold shadow-lg shadow-slate-200"
+                >
+                  Get started
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       </header>
 
@@ -90,11 +128,11 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      <footer className="border-t border-slate-200 bg-white py-12">
+      <footer className="border-t border-slate-200 bg-white py-6">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex items-center gap-2.5 opacity-50 grayscale">
+          <div className="flex items-center gap-2">
             <CatalystLogo className="w-6 h-6" />
-            <span className="font-bold tracking-tight">Career Compass AI</span>
+            <span className="font-bold">Career Compass AI</span>
           </div>
           <p className="text-sm text-slate-400 font-medium">© 2026 AI Job Assistant. Elevate your application strategy.</p>
         </div>

@@ -80,7 +80,7 @@ export default function Layout() {
               className="hidden sm:flex items-center gap-2 text-red-500 hover:text-red-700 font-bold transition-colors ml-4 cursor-pointer"
               title="Logout"
             >
-              <LogOut className="w-5 h-5" />
+              <LogOut className="w-5 h-5" />Logout
             </button>
           </div>
         </div>

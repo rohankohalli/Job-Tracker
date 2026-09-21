@@ -10,13 +10,15 @@ import Profile from './pages/Profile'
 import ProtectedRoute from './ProtectedRoutes'
 import PageNotFound from './pages/PageNotFound'
 import ForgotPassword from './pages/ForgotPassword'
+import LandingPage from './pages/LandingPage'
 
 export default function pageRoutes() {
     return (
         <Routes>
+            <Route path="/" element={<LandingPage />} />
             <Route element={<ProtectedRoute />}>
-                <Route path="/" element={<Layout />}>
-                    <Route index element={<JobList />} />
+                <Route element={<Layout />}>
+                    <Route path="/dashboard" element={<JobList />} />
                     <Route path="search" element={<JobSearch />} />
                     <Route path="addjob" element={<AddJob />} />
                     <Route path="jobs/:id" element={<JobDetail />} />

@@ -11,16 +11,14 @@ import usersRouter from './routes/users.routes.js'
 
 const app = express()
 
-const allowedOrigins = process.env.FRONTEND_URL
-  ? process.env.FRONTEND_URL.split(',').map((url) => url.trim())
-  : []
+const allowedOrigin = process.env.FRONTEND_URL
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true)
 
-    if (allowedOrigins.length > 0 && !allowedOrigins.includes(origin)) {
+    if (allowedOrigin && origin !== allowedOrigin) {
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.'
       return callback(new Error(msg), false)
     }
@@ -60,7 +58,7 @@ app.use((err, req, res, next) => {
 
 if (!process.env.VERCEL || process.env.SYNC_DB === 'true') {
   try {
-    await db.sequelize.sync()
+    await db.sequelize.sync({force: true})
   } catch (err) {
     console.error('Failed to sync database:', err)
   }

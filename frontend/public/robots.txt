@@ -1,0 +1,15 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /register
+
+# Disallow crawling of authenticated/private user routes
+Disallow: /dashboard
+Disallow: /search
+Disallow: /addjob
+Disallow: /jobs/
+Disallow: /profile
+
+# Sitemap
+Sitemap: https://job-tracker-zeta-lovat.vercel.app/sitemap.xml

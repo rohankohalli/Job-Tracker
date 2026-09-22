@@ -18,7 +18,10 @@ export async function triggerAnalysis(req, res, next) {
 
 export async function getAnalysis(req, res, next) {
   try {
-    const analysis = await analysisService.getAnalysisByJobId(Number(req.params.id))
+    const job = await jobsService.getJobById(Number(req.params.id), req.user.id)
+    if (!job) return res.status(404).json({ error: 'Job not found' })
+
+    const analysis = await analysisService.getAnalysisByJobId(job.id)
     if (!analysis) return res.status(404).json({ error: 'No analysis found for this job' })
     res.json(analysis)
   } catch (err) {

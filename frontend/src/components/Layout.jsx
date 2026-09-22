@@ -134,7 +134,7 @@ export default function Layout() {
             <CatalystLogo className="w-6 h-6" />
             <span className="font-bold">Career Compass AI</span>
           </div>
-          <p className="text-sm text-slate-400 font-medium">© 2026 AI Job Assistant. Elevate your application strategy.</p>
+          <p className="text-sm text-slate-400 font-medium">© 2026 Career Compass AI. Elevate your application strategy.</p>
         </div>
       </footer>
     </div>

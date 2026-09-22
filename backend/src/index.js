@@ -1,6 +1,8 @@
 import db from './models/index.js'
 import express from 'express'
 import cors from 'cors'
+import helmet from 'helmet'
+import rateLimit from 'express-rate-limit'
 import cookieParser from 'cookie-parser'
 import jobsRouter from './routes/jobs.routes.js'
 import analysisRouter from './routes/analysis.routes.js'
@@ -8,8 +10,39 @@ import scoringRouter from './routes/scoring.routes.js'
 import prepRouter from './routes/prep.routes.js'
 import searchRouter from './routes/search.routes.js'
 import usersRouter from './routes/users.routes.js'
+import { authenticateToken } from './middleware/auth.middleware.js'
 
 const app = express()
+
+// Security Headers
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}))
+
+// Rate Limiters
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 150,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' }
+})
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 15,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many authentication attempts, please try again after 15 minutes.' }
+})
+
+const aiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 25,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'AI generation limit reached. Please wait a few minutes before trying again.' }
+})
 
 const allowedOrigin = process.env.FRONTEND_URL
 
@@ -27,46 +60,53 @@ app.use(cors({
   credentials: true
 }))
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+// Request body limits to prevent payload flood attacks
+app.use(express.json({ limit: '1mb' }))
+app.use(express.urlencoded({ extended: true, limit: '1mb' }))
 app.use(cookieParser())
 
+// Apply general rate limiter to all API endpoints
+app.use('/api', generalLimiter)
+
+// Auth Routes (guarded by strict auth limiter)
+app.use('/api/users', authLimiter, usersRouter)
+
+// Jobs CRUD (authenticated inside jobs.routes.js)
 app.use('/api/jobs', jobsRouter)
-app.use('/api/jobs/:id', analysisRouter)
-app.use('/api/jobs/:id', scoringRouter)
-app.use('/api/jobs/:id', prepRouter)
+
+// Subroutes: Protected by authentication and rate-limiting
+app.use('/api/jobs/:id', authenticateToken, aiLimiter, analysisRouter)
+app.use('/api/jobs/:id', authenticateToken, scoringRouter)
+app.use('/api/jobs/:id', authenticateToken, aiLimiter, prepRouter)
+
+// Search Route
 app.use('/api/search', searchRouter)
-app.use('/api/users', usersRouter)
 
 app.get('/health', (req, res) => res.json({ status: 'Server running' }))
 app.get('/', (req, res) => res.json({ status: 'ok', message: 'Job Tracker Backend API is running', health: '/health' }))
-app.get('/api/sync-db', async (req, res) => {
-  try {
-    await db.sequelize.sync()
-    res.json({ success: true, message: 'All database tables created/synced successfully on Aiven!' })
-  } catch (err) {
-    console.error('Database sync error:', err)
-    res.status(500).json({ error: err.message })
-  }
-})
 
+// Global Error Handler
 app.use((err, req, res, next) => {
   console.error(err)
   const status = err.status ?? 500
   res.status(status).json({ error: err.message ?? 'Internal Server Error' })
 })
 
-if (!process.env.VERCEL || process.env.SYNC_DB === 'true') {
-  try {
-    await db.sequelize.sync({force: true})
-  } catch (err) {
-    console.error('Failed to sync database:', err)
-  }
+// Automatic safe database initialization (Runs automatically on both Local and Vercel)
+try {
+  await db.sequelize.authenticate()
+  console.log('✅ Database connection verified.')
+
+  // Safely creates missing tables without altering or dropping existing data
+  await db.sequelize.sync({ alter: false })
+  console.log('✅ Database tables synchronized successfully.')
+} catch (err) {
+  console.error('❌ Database connection/sync error:', err.message)
 }
 
 if (!process.env.VERCEL) {
   const port = process.env.PORT || 8000
-  app.listen(port, () => console.log(`Server listening on port ${port}`))
+  app.listen(port, () => console.log(`🚀 Server listening on port ${port}`))
 }
 
 export default app

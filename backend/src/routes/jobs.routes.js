@@ -7,7 +7,7 @@ import {
   updateJobRules,
   updateStatusRules,
 } from '../validators/jobs.validator.js'
-
+import { captureUrlRules, parseJdRules } from '../validators/discovery.validator.js'
 import { authenticateToken } from '../middleware/auth.middleware.js'
 
 const router = Router()
@@ -22,6 +22,6 @@ router.put('/:id', updateJobRules, jobsController.updateJob)
 router.patch('/:id/status', updateStatusRules, jobsController.updateStatus)
 router.delete('/:id', getOrDeleteJobRules, jobsController.deleteJob)
 
-router.post('/capture', discoveryController.captureUrl)
-router.post('/parse', discoveryController.parseJD)
+router.post('/capture', captureUrlRules, discoveryController.captureUrl)
+router.post('/parse', parseJdRules, discoveryController.parseJD)
 export default router

@@ -1,10 +1,12 @@
 import { Router } from 'express'
 import * as userController from '../controllers/user.controller.js'
+import { registerRules, loginRules } from '../validators/users.validator.js'
+
 const router = Router()
 
-router.post('/register', userController.register)
+router.post('/register', registerRules, userController.register)
 
-router.post('/login', userController.login)
+router.post('/login', loginRules, userController.login)
 
 router.post('/refresh', userController.refreshToken)
 

@@ -1,4 +1,4 @@
-# Backend — AI Job Assistant
+# Backend — Career Compass AI
 
 Node.js + Express REST API.
 

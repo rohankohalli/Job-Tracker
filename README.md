@@ -1,4 +1,4 @@
-# AI Job Assistant
+# Career Compass AI
 
 A human-in-the-loop job hunting assistant. Track jobs, analyze JDs with AI and score your resume with you approving every AI-assisted step.
 

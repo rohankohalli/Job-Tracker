@@ -1,8 +1,7 @@
 import db from './models/index.js'
 import express from 'express'
 import cors from 'cors'
-import helmet from 'helmet'
-import rateLimit from 'express-rate-limit'
+// import helmet from 'helmet'
 import cookieParser from 'cookie-parser'
 import jobsRouter from './routes/jobs.routes.js'
 import analysisRouter from './routes/analysis.routes.js'
@@ -14,35 +13,35 @@ import { authenticateToken } from './middleware/auth.middleware.js'
 
 const app = express()
 
-// Security Headers
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }
-}))
+// // Security Headers
+// app.use(helmet({
+//   crossOriginResourcePolicy: { policy: "cross-origin" }
+// }))
 
 // Rate Limiters
-const generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 150,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: 'Too many requests, please try again later.' }
-})
+// const generalLimiter = rateLimit({
+//   windowMs: 1 * 60 * 1000,
+//   max: 25,
+//   // standardHeaders: true,
+//   // legacyHeaders: false,
+//   message: { error: 'Too many requests, please try again later.' }
+// })
 
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 15,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: 'Too many authentication attempts, please try again after 15 minutes.' }
-})
+// const authLimiter = rateLimit({
+//   windowMs: 15 * 60 * 1000,
+//   max: 15,
+//   standardHeaders: true,
+//   legacyHeaders: false,
+//   message: { error: 'Too many authentication attempts, please try again after 15 minutes.' }
+// })
 
-const aiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 25,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: 'AI generation limit reached. Please wait a few minutes before trying again.' }
-})
+// const aiLimiter = rateLimit({
+//   windowMs: 15 * 60 * 1000,
+//   max: 25,
+//   standardHeaders: true,
+//   legacyHeaders: false,
+//   message: { error: 'AI generation limit reached. Please wait a few minutes before trying again.' }
+// })
 
 const allowedOrigin = process.env.FRONTEND_URL
 
@@ -65,19 +64,13 @@ app.use(express.json({ limit: '1mb' }))
 app.use(express.urlencoded({ extended: true, limit: '1mb' }))
 app.use(cookieParser())
 
-// Apply general rate limiter to all API endpoints
-app.use('/api', generalLimiter)
+app.use('/api/users', usersRouter)
 
-// Auth Routes (guarded by strict auth limiter)
-app.use('/api/users', authLimiter, usersRouter)
-
-// Jobs CRUD (authenticated inside jobs.routes.js)
 app.use('/api/jobs', jobsRouter)
 
-// Subroutes: Protected by authentication and rate-limiting
-app.use('/api/jobs/:id', authenticateToken, aiLimiter, analysisRouter)
+app.use('/api/jobs/:id', authenticateToken, analysisRouter)
 app.use('/api/jobs/:id', authenticateToken, scoringRouter)
-app.use('/api/jobs/:id', authenticateToken, aiLimiter, prepRouter)
+app.use('/api/jobs/:id', authenticateToken, prepRouter)
 
 // Search Route
 app.use('/api/search', searchRouter)

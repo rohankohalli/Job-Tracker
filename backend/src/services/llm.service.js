@@ -18,7 +18,7 @@ export async function generateJSON(prompt) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const response = await ai.models.generateContent({
-        model: 'gemini-flash-latest',
+        model: 'gemini-3.6-flash',
         contents: prompt,
         config: config
       })
@@ -42,7 +42,7 @@ export async function generateJSON(prompt) {
   // Step 2: Fallback to backup model
   try {
     const backupResponse = await ai.models.generateContent({
-      model: 'gemini-flash-lite-latest',
+      model: 'gemini-3.5-flash-lite',
       contents: prompt,
       config: config
     })

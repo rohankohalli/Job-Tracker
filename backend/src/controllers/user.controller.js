@@ -26,7 +26,7 @@ export async function register(req, res, next) {
         setRefreshTokenCookie(res, result.refreshToken)
         delete result.refreshToken
 
-        return res.status(201).json(result)
+        return res.status(201).json({ ...result, message: 'User registered successfully' })
     } catch (err) {
         next(err)
     }

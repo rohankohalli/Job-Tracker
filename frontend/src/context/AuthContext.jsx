@@ -36,14 +36,14 @@ export function AuthProvider({ children }) {
     const data = await apiLogin(credentials)
     setAccessToken(data.accessToken)
     setUser({ id: data.id, name: data.name, email: data.email })
-    navigate('/')
+    navigate('/dashboard')
   }
 
   const register = async (userData) => {
     const data = await apiRegister(userData)
     setAccessToken(data.accessToken)
     setUser({ id: data.id, name: data.name, email: data.email })
-    navigate('/')
+    navigate('/dashboard')
   }
 
   const logout = async () => {

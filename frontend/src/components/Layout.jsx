@@ -91,13 +91,13 @@ export default function Layout() {
             <>
               <nav className="flex items-center gap-6 md:gap-8">
                 <a
-                  href="#how-it-works"
+                  href="/#how-it-works"
                   className="hidden md:block text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors"
                 >
                   How it works
                 </a>
                 <a
-                  href="#features"
+                  href="/#features"
                   className="hidden md:block text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors"
                 >
                   Features
@@ -124,7 +124,7 @@ export default function Layout() {
         </div>
       </header>
 
-      <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-12">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 md:py-10">
         <Outlet />
       </main>
 

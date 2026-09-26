@@ -18,7 +18,7 @@ export default function pageRoutes() {
             <Route element={<Layout />}>
                 <Route path="/" element={<LandingPage />} />
                 <Route element={<ProtectedRoute />}>
-                    <Route path="/dashboard" element={<JobList />} />
+                    <Route path="dashboard" element={<JobList />} />
                     <Route path="search" element={<JobSearch />} />
                     <Route path="addjob" element={<AddJob />} />
                     <Route path="jobs/:id" element={<JobDetail />} />

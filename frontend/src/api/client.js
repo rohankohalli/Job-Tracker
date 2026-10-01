@@ -39,8 +39,13 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
 
-    // If the error is 401, not a retry, and NOT the refresh endpoint itself
-    if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url.includes('/users/refresh')) {
+    const isAuthEndpoint =
+      originalRequest.url?.includes('/users/login') ||
+      originalRequest.url?.includes('/users/register') ||
+      originalRequest.url?.includes('/users/refresh')
+
+    // If the error is 401, not a retry, and NOT an auth endpoint itself
+    if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
       originalRequest._retry = true
 
       try {
@@ -57,7 +62,9 @@ apiClient.interceptors.response.use(
       } catch (refreshError) {
         // If the refresh fails (e.g. refresh token expired), clear memory and log them out
         setAccessToken(null)
-        window.location.href = '/login'
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login'
+        }
         return Promise.reject(refreshError)
       }
     }

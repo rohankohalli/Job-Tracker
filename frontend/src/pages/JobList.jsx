@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getJobs } from '../api/jobs'
+import { getJobs, deleteJob } from '../api/jobs'
 import StatusBadge from '../components/StatusBadge'
-import { Building2, Calendar, ChevronRight, Briefcase, Plus } from 'lucide-react'
+import { Building2, Calendar, ChevronRight, Briefcase, Plus, Trash2 } from 'lucide-react'
 
 const FilterTab = ({ value, label, filter, setFilter }) => (
   <button
@@ -37,6 +37,20 @@ export default function JobList() {
     }
     fetchData()
   }, [filter])
+
+  const handleDelete = async (e, jobId) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const confirmDelete = window.confirm('Are you sure you want to delete this job?')
+    if (!confirmDelete) return
+
+    try {
+      await deleteJob(jobId)
+      setJobs(prevJobs => prevJobs.filter(job => job.id !== jobId))
+    } catch (err) {
+      alert('Failed to delete job: ' + err.message)
+    }
+  }
 
   if (error) return <div className="text-center py-10 text-red-500">Error: {error}</div>
 
@@ -107,8 +121,15 @@ export default function JobList() {
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 shrink-0">
+                <div className="flex items-center gap-3 shrink-0">
                   <StatusBadge status={job.status} />
+                  <button
+                    onClick={(e) => handleDelete(e, job.id)}
+                    title="Delete Job"
+                    className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                   <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
                     <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-primary transition-colors" />
                   </div>

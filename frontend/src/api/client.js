@@ -33,7 +33,22 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 )
 
-// Response Interceptor: Automatically handle 401 errors by calling /refresh
+// Track whether a token refresh is already in-flight to avoid duplicate refresh calls
+let isRefreshing = false
+let failedQueue = []
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach(({ resolve, reject }) => {
+    if (error) {
+      reject(error)
+    } else {
+      resolve(token)
+    }
+  })
+  failedQueue = []
+}
+
+// Response Interceptor: Automatically handle 401/403 errors by calling /refresh
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -44,28 +59,46 @@ apiClient.interceptors.response.use(
       originalRequest.url?.includes('/users/register') ||
       originalRequest.url?.includes('/users/refresh')
 
-    // If the error is 401, not a retry, and NOT an auth endpoint itself
-    if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
+    const status = error.response?.status
+
+    // If the error is 401 or 403 (expired token), not a retry, and NOT an auth endpoint itself
+    if ((status === 401 || status === 403) && !originalRequest._retry && !isAuthEndpoint) {
+      // If a refresh is already in-flight, queue this request to retry after it completes
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject })
+        }).then((token) => {
+          originalRequest.headers['Authorization'] = `Bearer ${token}`
+          return apiClient(originalRequest)
+        })
+      }
+
       originalRequest._retry = true
+      isRefreshing = true
 
       try {
-        // Automatically try to get a new access token using the HttpOnly cookie
+        // Use a raw axios call (NOT apiClient) to avoid the interceptor loop
         const res = await axios.post(`${BASE_URL}/users/refresh`, {}, { withCredentials: true })
 
-        // Save the new token to local memory
         const newAccessToken = res.data.accessToken
         setAccessToken(newAccessToken)
+
+        // Retry all queued requests with the new token
+        processQueue(null, newAccessToken)
 
         // Update the failed request with the new token and retry it
         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
         return apiClient(originalRequest)
       } catch (refreshError) {
-        // If the refresh fails (e.g. refresh token expired), clear memory and log them out
+        // If the refresh fails (e.g. refresh token expired), clear memory and redirect to login
+        processQueue(refreshError, null)
         setAccessToken(null)
-        if (window.location.pathname !== '/login') {
+        if (window.location.pathname !== '/login' && window.location.pathname !== '/') {
           window.location.href = '/login'
         }
         return Promise.reject(refreshError)
+      } finally {
+        isRefreshing = false
       }
     }
 

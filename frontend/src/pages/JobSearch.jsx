@@ -58,7 +58,7 @@ export default function JobSearch() {
     setError(null)
     setResults([])
     try {
-      const token = searchParams.get('next_page_token') || ''
+      const token = nextPageToken || ''
       const data = await searchJobs(q, loc, p, token, searchFilters)
       setResults(data.results)
       setTotalPages(data.totalPages || 1)
@@ -72,6 +72,8 @@ export default function JobSearch() {
     }
   }
 
+  const nextPageToken = searchParams.get('next_page_token') || ''
+
   // Trigger search when URL query params change (including page tokens)
   useEffect(() => {
     if (queryParam.trim() || locationParam.trim()) {
@@ -81,7 +83,8 @@ export default function JobSearch() {
       setHasSearched(false)
       setResults([])
     }
-  }, [queryParam, locationParam, page, filterParams, searchParams.get('next_page_token')])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queryParam, locationParam, page, filterParams, nextPageToken])
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target

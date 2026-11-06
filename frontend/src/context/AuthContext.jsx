@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 const AuthContext = createContext()
 
+/* eslint-disable-next-line react-refresh/only-export-components */
 export function useAuth() {
   return useContext(AuthContext)
 }
@@ -18,9 +19,9 @@ export function AuthProvider({ children }) {
     // Check if the user is already logged in on mount by attempting a refresh
     const initAuth = async () => {
       try {
-        const res = await refreshToken()
-        setAccessToken(res.data.accessToken)
-        setUser({ id: res.data.id, name: res.data.name, email: res.data.email })
+        const data = await refreshToken()
+        setAccessToken(data.accessToken)
+        setUser({ id: data.id, name: data.name, email: data.email })
       } catch {
         // If refresh fails, they are logged out. Do nothing.
         setUser(null)

@@ -3,6 +3,7 @@ User-agent: *
 Allow: /
 Allow: /login
 Allow: /register
+Allow: /forgot-password
 
 # Disallow crawling of authenticated/private user routes
 Disallow: /dashboard

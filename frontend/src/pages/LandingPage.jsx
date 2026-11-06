@@ -224,14 +224,14 @@ function InteractiveMockup() {
               <p className="text-[11px] text-slate-500 mt-0.5">Uploaded & parsed • 142 KB (PDF)</p>
             </div>
 
-            <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 via-cyan-500/10 to-blue-500/10 border border-emerald-200">
+            <div className="p-4 rounded-xl bg-linear-to-br from-emerald-500/10 via-cyan-500/10 to-blue-500/10 border border-emerald-200">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold uppercase tracking-tight text-slate-700">Overall Fit Score</span>
                 <span className="text-lg font-black text-emerald-700">{fitScore}%</span>
               </div>
               <div className="h-2.5 w-full bg-slate-200/80 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 transition-all duration-1000 ease-out"
+                  className="h-full bg-linear-to-r from-emerald-500 to-cyan-500 transition-all duration-1000 ease-out"
                   style={{ width: `${fitScore}%` }}
                 />
               </div>
@@ -285,7 +285,7 @@ function InteractiveMockup() {
             <button
               onClick={handleRunAnalysis}
               disabled={analyzing}
-              className="mt-2 w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-xs shadow-md shadow-cyan-600/20 hover:shadow-cyan-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75"
+              className="mt-2 w-full py-3 px-4 rounded-xl bg-linear-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-xs shadow-md shadow-cyan-600/20 hover:shadow-cyan-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75"
             >
               {analyzing ? (
                 <>
@@ -418,7 +418,7 @@ function VideoWalkthrough() {
 
       <div className="mt-8 max-w-4xl mx-auto">
         <div className="relative rounded-2xl md:rounded-3xl bg-slate-950 border border-slate-800 shadow-2xl overflow-hidden aspect-video flex flex-col justify-between group">
-          <div className="p-4 md:p-6 flex items-center justify-between text-left z-10 bg-gradient-to-b from-slate-950/90 to-transparent">
+          <div className="p-4 md:p-6 flex items-center justify-between text-left z-10 bg-linear-to-b from-slate-950/90 to-transparent">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
               <span className="text-xs md:text-sm font-semibold text-slate-200">
@@ -431,7 +431,7 @@ function VideoWalkthrough() {
           </div>
 
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#22d3ee_1px,transparent_1px)] [background-size:16px_16px]" />
+            <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#22d3ee_1px,transparent_1px)] bg-size-[16px_16px]" />
 
             {!isPlaying ? (
               <button
@@ -477,7 +477,7 @@ function VideoWalkthrough() {
             )}
           </div>
 
-          <div className="p-4 md:p-6 z-10 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent">
+          <div className="p-4 md:p-6 z-10 bg-linear-to-t from-slate-950 via-slate-950/80 to-transparent">
             <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mb-3 cursor-pointer">
               <div
                 className="bg-cyan-500 h-full rounded-full transition-all duration-300"
@@ -697,10 +697,6 @@ function CtaBanner() {
             Take control of your job search today
           </h2>
 
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
-            Join thousands of professionals landing interviews faster with human-verified AI matching.
-          </p>
-
           <div className="pt-2">
             <Link
               to="/register"
@@ -711,10 +707,6 @@ function CtaBanner() {
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-
-          <p className="text-xs text-slate-400 font-medium">
-            No credit card required. Free tier available.
-          </p>
         </div>
       </div>
     </section>

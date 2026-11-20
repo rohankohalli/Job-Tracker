@@ -18,7 +18,7 @@ export async function register(userData) {
     })
 
     const accessToken = generateAccessToken(newUser)
-    const refreshToken = generateRefreshToken(newUser, true)
+    const refreshToken = generateRefreshToken(newUser)
 
     return {
         id: newUser.id,
